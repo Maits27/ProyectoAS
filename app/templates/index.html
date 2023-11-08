@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Log-in</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    </head>
+    <body>
+      <div class="container">
+        <div class="message signup">
+        <div class="form--heading">Welcome back! </div>
+          <form autocomplete="off" id=formulario1 method="post" action="config_php/login.php">
+            <input type="email" id="email2" name="email2" placeholder="Email">
+            <input type="password" id="contrasena2" name="contrasena2" placeholder="Contraseña">
+            <button class="button">Login</button>
+            <p id="erroreak" class="error_message">
+              <div class="error_message">{{ error }}</div>
+            </p>
+          </form>
+        </div>
+        <div class="form form--signup">
+          <div class="form--heading">Welcome! Sign Up</div>
+          <form autocomplete="off" id="formulario" method="post" action="config_php/registro.php">
+            <input type="text" id="nombre" name="nombre" placeholder="Nombre" required>
+            <!--input type="text" id="nombregrupo" placeholder="Nombre del grupo" required-->
+            <input type="email" id="email" name="email" placeholder="Email" required>
+            <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña" required>
+            <input type="password" id="confirmacion" name="confirmacion" placeholder="Repite la contraseña..." required>
+            <button class="button">Sign Up</button>
+            <p id="erroreak" class="error_message">
+              <div class="error_message">{{ error }}</div>
+            </p>   
+          </form>
+        </div>
+      </div>
+    </body>
+</html>
+

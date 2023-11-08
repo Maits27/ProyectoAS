@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  flask-app:
+    build: .
+    volumes:
+      - ./app:/app
+    ports:
+      - "5000:5000" 
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    environment:
+      - MYSQL_HOST=mysql
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: "test"
+      MYSQL_DATABASE: "database"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: test
+    ports:
+      - "8080:80" # Mapea el puerto 8080 para phpMyAdmin
+    depends_on:
+      - mysql
