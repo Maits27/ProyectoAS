@@ -1,17 +1,29 @@
 version: "3.9"
 services:
   flask-app:
-    build: .
+    build: ./build/app/
     volumes:
       - ./app:/app
     ports:
       - "5000:5000" 
+    depends_on:
+      - flask-api
+    links:
+      - flask-api
+
+  flask-api:
+    build: ./build/api/
+    volumes:
+      - ./api:/api
+    ports:
+      - "5001:5000" 
     depends_on:
       - mysql
     links:
       - mysql
     environment:
       - MYSQL_HOST=mysql
+
   mysql:
     image: mysql:latest
     environment:
@@ -21,6 +33,7 @@ services:
       - "3306:3306"
     volumes:
       - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+      
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
