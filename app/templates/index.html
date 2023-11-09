@@ -8,7 +8,7 @@
       <div class="container">
         <div class="message signup">
         <div class="form--heading">Welcome back! </div>
-          <form autocomplete="off" id=formulario1 method="post" action="config_php/login.php">
+          <form autocomplete="off" id=formulario1 method="POST" action="{{ url_for('login') }}">
             <input type="email" id="email2" name="email2" placeholder="Email">
             <input type="password" id="contrasena2" name="contrasena2" placeholder="Contraseña">
             <button class="button">Login</button>
@@ -19,7 +19,7 @@
         </div>
         <div class="form form--signup">
           <div class="form--heading">Welcome! Sign Up</div>
-          <form autocomplete="off" id="formulario" method="post" action="config_php/registro.php">
+          <form autocomplete="off" id="formulario" method="POST" action="{{ url_for('register') }}">
             <input type="text" id="nombre" name="nombre" placeholder="Nombre" required>
             <!--input type="text" id="nombregrupo" placeholder="Nombre del grupo" required-->
             <input type="email" id="email" name="email" placeholder="Email" required>

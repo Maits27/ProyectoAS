@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Liburutegia</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/lista.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
+		<link rel="shortcut icon" href="{{ url_for('static', filename='image/user.jpg') }}" />
+	</head>
+	<body>
+		<header>
+            <img width="60px" src="{{ url_for('static', filename='image/user.jpg') }}">
+            <p>{{ datos['user'] }}</p>
+        </header>
+		<br>
+		<div class="laukia">
+			<button class="create_button" onclick="location.href='user_menu.php'"><h3>Crear nuevo proyecto</h3> </button>    
+            {% for proyecto in datos['proyectos'] %}
+                <button>{{datos['nombre']}}</button>
+            {% endfor %}
+        </div>
+	</body>
+</html>
