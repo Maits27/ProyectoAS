@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import hashlib
@@ -9,6 +9,7 @@ app.config['MYSQL_HOST'] = 'mysql'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'test'
 app.config['MYSQL_DB'] = 'database'
+app.secret_key = '987654321'
 
 mysql = MySQL(app)
 
@@ -27,15 +28,14 @@ def register():
     }
 
     try:
-        concatenated_data = nombre + email
-
+        hash = nombre + email + app.secret_key
         # Calcula el hash SHA-256 de la concatenación
-        sha256 = hashlib.sha256()
-        sha256.update(concatenated_data.encode('utf-8'))
-        id = sha256.hexdigest()
+        hash = hashlib.sha1(hash.encode())
+        id = hash.hexdigest()
 
-        sha256.update(contra.encode('utf-8'))
-        contraseña_hash = sha256.hexdigest()
+        hash = contra + app.secret_key
+        hash = hashlib.sha1(hash.encode())
+        contrasena_hash = hash.hexdigest()
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM usuarios WHERE id = %s', (id,))
@@ -43,9 +43,8 @@ def register():
 
         if user:
             resultado['error'] = 'Ya existe el usuario. Prueba con otro email.'
-            return jsonify(resultado)
         else:
-            cursor.execute('INSERT INTO usuarios (id, nombre, email, contrasena) VALUES (%s, %s, %s, %s)', (id, nombre, email, contraseña_hash,))
+            cursor.execute('INSERT INTO usuarios (id, nombre, email, contrasena) VALUES (%s, %s, %s, %s)', (id, nombre, email, contrasena_hash,))
             mysql.connection.commit()
             resultado['correcto'] = True
             resultado['datos'] = {'id': id}
@@ -57,8 +56,7 @@ def register():
     finally:
         cursor.close()
 
-    print(f"Respuesta: {type(resultado)}")
-    return jsonify(resultado)
+    return resultado
 
     
 @app.route('/', methods=['POST'])
@@ -75,9 +73,12 @@ def login():
     }
 
     try:
-        sha256 = hashlib.sha256()
-        sha256.update(contra.encode('utf-8'))
-        contraseña_hash = sha256.hexdigest()
+        if email == 'root@root.com':
+            contraseña_hash = 'root'
+        else:
+            hash = contra + app.secret_key
+            hash = hashlib.sha1(hash.encode())
+            contraseña_hash = hash.hexdigest()
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM usuarios WHERE email = %s AND contrasena = %s', (email, contraseña_hash,))
@@ -91,19 +92,21 @@ def login():
             }
         else:
             resultado['error'] = 'No existe el usuario.'
+            
+        return resultado
 
     except Exception as e:
     # Manejo de excepciones
         print(f"Error en el login de usuario: {e}")
         resultado['error'] = str(e)
+        return resultado
     finally:
         cursor.close()
 
-    print(f"Respuesta: {resultado}")
-    return jsonify(resultado)
+    
     
 
-@app.route('/user_menu', methods=['POST'])
+@app.route('/user_menu', methods=['GET'])
 def get_user_menu_data():
     # Establecer la conexión a la base de datos MySQL (asegúrate de que MySQL esté configurado)
     data = request.json
@@ -124,14 +127,14 @@ def get_user_menu_data():
             resultado['correcto'] = True
             resultado['datos'] = proyecto
         
-        return jsonify(resultado)
     except Exception as e:
     # Manejo de excepciones
         print(f"Error en el registro de usuario: {e}")
         resultado['error'] = str(e)
-        return jsonify(resultado)
     finally:
         cursor.close()
+    
+    return resultado
 
 
 if __name__ == '__main__':

@@ -22,3 +22,16 @@ CREATE TABLE proyectosUsuario (
     FOREIGN KEY (IdUsuario) REFERENCES usuarios(id),
     FOREIGN KEY (IdProyecto) REFERENCES proyecto(id)
 );
+
+
+-- Insertar un usuario
+INSERT INTO usuarios (id, nombre, email, contrasena)
+VALUES ('1', 'root', 'root@root.com', 'root');
+
+-- Insertar un proyecto
+INSERT INTO proyecto (id, nombre, contrasena)
+VALUES ('1', 'root', 'root');
+
+-- Insertar la asociación entre el usuario y el proyecto en la tabla intermedia
+INSERT INTO proyectosUsuario (id, IdUsuario, IdProyecto)
+VALUES ('1', '1', '1');

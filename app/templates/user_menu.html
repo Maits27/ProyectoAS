@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Liburutegia</title>
+		<title>Proyectos</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/lista.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
 		<link rel="shortcut icon" href="{{ url_for('static', filename='image/user.jpg') }}" />
@@ -10,13 +10,20 @@
 		<header>
             <img width="60px" src="{{ url_for('static', filename='image/user.jpg') }}">
             <p>{{ datos['user'] }}</p>
+			<button width="60px"><a href="{{ url_for('logout') }}">Logout</a></button>
         </header>
 		<br>
 		<div class="laukia">
-			<button class="create_button" onclick="location.href='user_menu.php'"><h3>Crear nuevo proyecto</h3> </button>    
+			<button class="create_button" onclick="location.href='user_menu.php'"><h3>Crear nuevo proyecto</h3></button>  
+			&nbsp
+			<button class="create_button" onclick="location.href='user_menu.php'"><h3>Acceder a proyecto</h3></button>  
+			<h3>Lista de proyectos:</h3>
             {% for proyecto in datos['proyectos'] %}
                 <button>{{datos['nombre']}}</button>
             {% endfor %}
+			{% if datos['proyectos']|length == 0 %}
+				<p>No hay proyectos</p>
+			{% endif %}
         </div>
 	</body>
 </html>
