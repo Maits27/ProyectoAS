@@ -5,6 +5,9 @@ app = Flask(__name__)
 
 app.secret_key = '123456789'
 
+#####################
+###    LOGOUT     ###
+#####################
 @app.route('/logout')
 def logout():
 
@@ -14,7 +17,9 @@ def logout():
     return redirect(url_for('login'))
 
 
-
+#####################
+###   REGISTER    ###
+#####################
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -26,7 +31,6 @@ def register():
         contra = request.form["contrasena"]
 
         response = register_user(nombre, email, contra)
-        print(type(response))
 
         if response.get('correcto'):
             datos = response.get('datos')
@@ -36,7 +40,7 @@ def register():
             return redirect(url_for('user_menu'))
         else:
             var_error = response.get('error')
-            return redirect(url_for('login', error=var_error))
+    
     return render_template('index.html', error=var_error)
 
 def register_user(nombre, email, contra):
@@ -52,7 +56,9 @@ def register_user(nombre, email, contra):
 
 
 
-
+#####################
+###     LOGIN     ###
+#####################
 
 @app.route('/', methods=['POST', 'GET'])
 def login():
@@ -68,12 +74,12 @@ def login():
             session['ID_USER'] = datos.get('id')
             return redirect(url_for('user_menu'))
         else:
-            return redirect(url_for('login', error1=response.get('error')))
-
-    return render_template('index.html', error1='')
+            return render_template('index.html', error1=response.get('error'))
+    else:
+        return render_template('index.html', error1='')
 
 def login_user(email, contra):
-    db_url = "http://flask-api:5001/login"  # Utiliza el nombre del servicio de la base de datos
+    db_url = "http://flask-api:5001/"  # Utiliza el nombre del servicio de la base de datos
     payload = {'email': email, 'contra': contra}
     response = requests.post(db_url, json=payload)
     if response.status_code == 200:
@@ -81,10 +87,12 @@ def login_user(email, contra):
         return data
     else:
         print(f"Error en la solicitud. Código de estado: {response.status_code}")
-        return response.status_code
+        return data
 
 
-
+#####################
+###   USER_MENU   ###
+#####################
 
 
 @app.route('/user_menu', methods=['POST', 'GET'])
@@ -93,7 +101,7 @@ def user_menu():
     proyecto_json = ''
 
     if id is None:
-        return redirect(url_for('login', error='Vuelve a iniciar sesión.'))
+        return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
     else:
         response = user_menu_datos(id)
         proyecto_json = response.get('datos')
@@ -115,6 +123,101 @@ def user_menu_datos(id):
     else:
         print(f"Error en la solicitud. Código de estado: {response.status_code}")
         return None
+
+
+
+#####################
+###     CREATE    ###
+#####################
+
+@app.route('/create_project', methods=['POST', 'GET'])
+def create_project():
+    id=session['ID_USER']
+    datos = {
+                'user': session['username'],
+                'error': '' 
+            }
+
+    if id is None:
+        return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
+    else:
+        if request.method == 'POST':
+            nombre = request.form["nombre"]
+            contra = request.form["contrasena"]
+            presupuesto = request.form["presupuesto"]
+            response = crear_proyecto(id, nombre, contra, presupuesto)
+            
+            if response.get('correcto'):
+                datos = response.get('datos')
+                datos['error'] = response.get('error')
+
+                # TODO IGUAL DEVOLVER EL ID DEL PROYECTO CUANDO REDIRIJAMOS AL MENU DEL PROYECTO
+
+                return redirect(url_for('user_menu'))
+            else:
+                datos['error'] = response.get('error')
+        
+    return render_template('create_project.html', datos=datos)
+
+    
+def crear_proyecto(id, nombre, contra, presupuesto):
+    db_url = "http://flask-api:5001/create_project"  
+    payload = {'userid': id, 'nombre': nombre, 'contra': contra, 'presupuesto': presupuesto}
+    response = requests.post(db_url, json=payload)
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        print(f"Error en la solicitud. Código de estado: {response.status_code}")
+        return None
+
+
+
+#####################
+###     JOIN      ###
+#####################
+
+@app.route('/join_project', methods=['POST', 'GET'])
+def join_project():
+    id=session['ID_USER']
+    datos = {
+                'user': session['username'],
+                'error': '' 
+            }
+
+    if id is None:
+        return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
+    else:
+        if request.method == 'POST':
+            idproyecto = request.form["idproyecto"]
+            contra = request.form["contrasena"]
+            response = acceder_proyecto(id, idproyecto, contra)
+            
+            if response.get('correcto'):
+                datos = response.get('datos')
+                datos['error'] = response.get('error')
+
+                # TODO IGUAL DEVOLVER EL ID DEL PROYECTO CUANDO REDIRIJAMOS AL MENU DEL PROYECTO
+
+                return redirect(url_for('user_menu'))
+            else:
+                datos['error'] = response.get('error')
+        
+    return render_template('join_project.html', datos=datos)
+
+    
+def acceder_proyecto(userid, idproyecto, contra):
+    db_url = "http://flask-api:5001/create_project"  
+    payload = {'userid': userid, 'idproyecto': idproyecto, 'contra': contra}
+    response = requests.post(db_url, json=payload)
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        print(f"Error en la solicitud. Código de estado: {response.status_code}")
+        return None
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

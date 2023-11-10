@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Crear proyecto</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/proyecto.css') }}">
+		<link rel="shortcut icon" href="{{ url_for('static', filename='image/user.jpg') }}" />
+    </head>
+    <body>
+        <header>
+            <img width="60px" src="{{ url_for('static', filename='image/user.jpg') }}">
+            <p>{{ datos['user'] }}</p>
+        </header>
+        <br>
+        <!-- multistep form -->
+    <form autocomplete="off" id="msform" method="POST" action="{{ url_for('create_project') }}">
+
+        <fieldset>
+            <h2 class="fs-title">Crea un nuevo proyecto</h2>
+            <input type="text" id="nombre" name="nombre" placeholder="Nombre del proyecto" required>
+            <input type="number" id="presupuesto" name="presupuesto" placeholder="Presupuesto (no podrás cambiarlo más adelante)" required>
+            <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña para el proyecto" required>
+            <input type="password" id="confirmacion" name="confirmacion" placeholder="Repite la contraseña..." required>
+            <button>Crear</button>
+            <p id="erroreak" class="error_message">
+                <div class="error_message">{{ datos['error'] }}</div>
+            </p>   
+        </fieldset>
+    </form>    
+    </body>
+</html>
+

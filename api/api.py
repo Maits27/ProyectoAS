@@ -13,6 +13,11 @@ app.secret_key = '987654321'
 
 mysql = MySQL(app)
 
+
+#####################
+###   REGISTER    ###
+#####################
+
 @app.route('/register', methods=['POST'])
 def register():
     # ... (mover la lógica de registro de usuario aquí)
@@ -30,11 +35,11 @@ def register():
     try:
         hash = nombre + email + app.secret_key
         # Calcula el hash SHA-256 de la concatenación
-        hash = hashlib.sha1(hash.encode())
+        hash = hashlib.sha256(hash.encode())
         id = hash.hexdigest()
 
         hash = contra + app.secret_key
-        hash = hashlib.sha1(hash.encode())
+        hash = hashlib.sha256(hash.encode())
         contrasena_hash = hash.hexdigest()
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -58,6 +63,9 @@ def register():
 
     return resultado
 
+#####################
+###     LOGIN     ###
+#####################
     
 @app.route('/', methods=['POST'])
 def login():
@@ -73,12 +81,10 @@ def login():
     }
 
     try:
-        if email == 'root@root.com':
-            contraseña_hash = 'root'
-        else:
-            hash = contra + app.secret_key
-            hash = hashlib.sha1(hash.encode())
-            contraseña_hash = hash.hexdigest()
+        
+        hash = contra + app.secret_key
+        hash = hashlib.sha256(hash.encode())
+        contraseña_hash = hash.hexdigest()
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM usuarios WHERE email = %s AND contrasena = %s', (email, contraseña_hash,))
@@ -103,7 +109,12 @@ def login():
     finally:
         cursor.close()
 
-    
+
+
+
+#####################
+###   USER_MENU   ###
+#####################   
     
 
 @app.route('/user_menu', methods=['GET'])
@@ -135,6 +146,141 @@ def get_user_menu_data():
         cursor.close()
     
     return resultado
+
+#####################
+###     CREATE    ###
+#####################
+
+
+@app.route('/create_project', methods=['POST'])
+def create_project():
+    data = request.json
+    nombre = data.get('nombre')
+    userid = data.get('userid')
+    contra = data.get('contra')
+    presupuesto = data.get('presupuesto')
+
+    resultado = {
+        'correcto': False,
+        'error': 'ERROR',
+        'datos': None
+    }
+
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT COUNT(*) as count FROM proyecto')
+        num=cursor.fetchone()
+        id = '#' + nombre + str(num['count'])
+
+        # Calcula el hash SHA-256 de la concatenación
+        hash = contra + app.secret_key
+        hash = hashlib.sha256(hash.encode())
+        contrasena_hash = hash.hexdigest()
+
+        cursor.execute('SELECT * FROM proyecto WHERE id = %s', (id,))
+        proyecto=cursor.fetchone()
+
+        if proyecto:
+            resultado['error'] = 'Ya existe el proyecto. Prueba con otro nombre.'
+        else:
+            # Conseguimos el email del main user:
+            cursor.execute('SELECT email FROM usuarios WHERE id = %s', (userid,))
+            email=cursor.fetchone() 
+
+            if email:
+                cursor.execute('INSERT INTO proyecto (id, nombre, contrasena, presupuesto, main) VALUES (%s, %s, %s, %s, %s)', (id, nombre, contrasena_hash, presupuesto, email['email'],))
+                mysql.connection.commit()
+
+                hash = userid + id
+                hash = hashlib.sha256(hash.encode())
+                id_p_u = hash.hexdigest()
+
+                cursor.execute('INSERT INTO proyectosUsuario (id, IdUsuario, IdProyecto) VALUES (%s, %s, %s)', (id_p_u, userid, id,))
+                mysql.connection.commit()
+
+                resultado['correcto'] = True
+                resultado['error'] = 'NO HAY ERROR'
+                resultado['datos'] = {'id': id}
+            else:
+                resultado['error'] = 'Problemas con el email.'
+        return resultado
+    except Exception as e:
+    # Manejo de excepciones
+        print(f"Error en el registro de proyecto: {e}")
+        resultado['error'] = str(e)
+        mysql.connection.rollback()
+        return resultado
+    finally:
+        cursor.close()
+
+    
+#####################
+###     JOIN      ###
+#####################
+
+
+@app.route('/join_project', methods=['POST'])
+def join_project():
+    data = request.json
+    nombre = data.get('nombre')
+    userid = data.get('userid')
+    contra = data.get('contra')
+    presupuesto = data.get('presupuesto')
+
+    resultado = {
+        'correcto': False,
+        'error': 'ERROR',
+        'datos': None
+    }
+
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT COUNT(*) as count FROM proyecto')
+        num=cursor.fetchone()
+        id = '#' + nombre + str(num['count'])
+
+        # Calcula el hash SHA-256 de la concatenación
+        hash = contra + app.secret_key
+        hash = hashlib.sha256(hash.encode())
+        contrasena_hash = hash.hexdigest()
+
+        cursor.execute('SELECT * FROM proyecto WHERE id = %s', (id,))
+        proyecto=cursor.fetchone()
+
+        if proyecto:
+            resultado['error'] = 'Ya existe el proyecto. Prueba con otro nombre.'
+        else:
+            # Conseguimos el email del main user:
+            cursor.execute('SELECT email FROM usuarios WHERE id = %s', (userid,))
+            email=cursor.fetchone() 
+
+            if email:
+                cursor.execute('INSERT INTO proyecto (id, nombre, contrasena, presupuesto, main) VALUES (%s, %s, %s, %s, %s)', (id, nombre, contrasena_hash, presupuesto, email['email'],))
+                mysql.connection.commit()
+
+                hash = userid + id
+                hash = hashlib.sha256(hash.encode())
+                id_p_u = hash.hexdigest()
+
+                cursor.execute('INSERT INTO proyectosUsuario (id, IdUsuario, IdProyecto) VALUES (%s, %s, %s)', (id_p_u, userid, id,))
+                mysql.connection.commit()
+
+                resultado['correcto'] = True
+                resultado['error'] = 'NO HAY ERROR'
+                resultado['datos'] = {'id': id}
+            else:
+                resultado['error'] = 'Problemas con el email.'
+        return resultado
+    except Exception as e:
+    # Manejo de excepciones
+        print(f"Error en el registro de proyecto: {e}")
+        resultado['error'] = str(e)
+        mysql.connection.rollback()
+        return resultado
+    finally:
+        cursor.close()
+
+
 
 
 if __name__ == '__main__':

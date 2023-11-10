@@ -14,12 +14,13 @@
         </header>
 		<br>
 		<div class="laukia">
-			<button class="create_button" onclick="location.href='user_menu.php'"><h3>Crear nuevo proyecto</h3></button>  
+			<a href="{{ url_for('create_project') }}"><button class="create_button"></button><h3>Crear nuevo proyecto</h3></button></a> 
 			&nbsp
-			<button class="create_button" onclick="location.href='user_menu.php'"><h3>Acceder a proyecto</h3></button>  
+			<button class="create_button"><a href="{{ url_for('join_project') }}"><h3>Acceder a proyecto</h3></a></button>  
+  
 			<h3>Lista de proyectos:</h3>
             {% for proyecto in datos['proyectos'] %}
-                <button>{{datos['nombre']}}</button>
+                <button>{{ datos['nombre'] }}</button>
             {% endfor %}
 			{% if datos['proyectos']|length == 0 %}
 				<p>No hay proyectos</p>

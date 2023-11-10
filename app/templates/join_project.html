@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Acceder a proyecto</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/proyecto.css') }}">
+		<link rel="shortcut icon" href="{{ url_for('static', filename='image/user.jpg') }}" />
+    </head>
+    <body>
+        <header>
+            <img width="60px" src="{{ url_for('static', filename='image/user.jpg') }}">
+            <p>{{ datos['user'] }}</p>
+        </header>
+        <br>
+        <!-- multistep form -->
+    <form autocomplete="off" id="msform" method="POST" action="{{ url_for('join_project') }}">
+
+        <fieldset>
+            <h2 class="fs-title">Accede a un proyecto ya existente</h2>
+            <h3 class="fs-subtitle">Pídele al creador los siguientes datos:</h3>
+            <input type="text" id="idproyecto" name="idproyecto" placeholder="Id del proyecto" required>
+            <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña del proyecto" required>
+            <button>Crear</button>
+            <p id="erroreak" class="error_message">
+                <div class="error_message">{{ datos['error'] }}</div>
+            </p>   
+        </fieldset>
+    </form>    
+    </body>
+</html>
+

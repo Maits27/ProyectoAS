@@ -10,11 +10,11 @@
         <div class="form--heading">Welcome back! </div>
           <form autocomplete="off" id=formulario1 method="POST" action="{{ url_for('login') }}">
             <input type="email" id="email2" name="email2" placeholder="Email">
+            <!--input type="text" id="nombre2" name="nombre2" placeholder="Nombre"-->
             <input type="password" id="contrasena2" name="contrasena2" placeholder="Contraseña">
             <button class="button">Login</button>
             <p id="erroreak" class="error_message">
               <div class="error_message">{{ error1 }}</div>
-              {{error1}}
             </p>
           </form>
         </div>

@@ -2,7 +2,7 @@
 -- Crear la tabla de usuarios
 CREATE TABLE usuarios (
     id CHAR(64) PRIMARY KEY,
-    nombre VARCHAR(255),
+    nombre VARCHAR(255) UNIQUE,
     email VARCHAR(255) UNIQUE,
     contrasena VARCHAR(255)
 );
@@ -11,7 +11,9 @@ CREATE TABLE usuarios (
 CREATE TABLE proyecto (
     id CHAR(64) PRIMARY KEY,
     nombre VARCHAR(255) UNIQUE,
-    contrasena VARCHAR(255)
+    contrasena VARCHAR(255), 
+    presupuesto INT, 
+    main VARCHAR(255)
 );
 
 -- Crear la tabla intermedia gruposUsuario
@@ -24,14 +26,3 @@ CREATE TABLE proyectosUsuario (
 );
 
 
--- Insertar un usuario
-INSERT INTO usuarios (id, nombre, email, contrasena)
-VALUES ('1', 'root', 'root@root.com', 'root');
-
--- Insertar un proyecto
-INSERT INTO proyecto (id, nombre, contrasena)
-VALUES ('1', 'root', 'root');
-
--- Insertar la asociación entre el usuario y el proyecto en la tabla intermedia
-INSERT INTO proyectosUsuario (id, IdUsuario, IdProyecto)
-VALUES ('1', '1', '1');
