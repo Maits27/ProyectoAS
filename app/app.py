@@ -12,6 +12,7 @@ app.secret_key = '123456789'
 def logout():
 
     session.pop('username', None)
+    session.pop('project', None)
     session.pop('email', None)
     session.pop('ID_USER', None)
     return redirect(url_for('login'))
@@ -36,6 +37,7 @@ def register():
             datos = response.get('datos')
             session['username'] = nombre
             session['email'] = email
+            session['project'] = ''
             session['ID_USER'] = datos.get('id')
             return redirect(url_for('user_menu'))
         else:
@@ -71,6 +73,7 @@ def login():
             datos = response.get('datos')
             session['username'] = datos.get('nombre')
             session['email'] = email
+            session['project'] = ''
             session['ID_USER'] = datos.get('id')
             return redirect(url_for('user_menu'))
         else:
@@ -108,7 +111,7 @@ def user_menu():
         
     datos = {
         'user': session['username'],
-        'proyectos': proyecto_json 
+        'info': proyecto_json 
     }
     return render_template('user_menu.html', datos=datos)
 
@@ -135,7 +138,8 @@ def create_project():
     id=session['ID_USER']
     datos = {
                 'user': session['username'],
-                'error': '' 
+                'error': '',
+                'datos': None
             }
 
     if id is None:
@@ -148,12 +152,13 @@ def create_project():
             response = crear_proyecto(id, nombre, contra, presupuesto)
             
             if response.get('correcto'):
-                datos = response.get('datos')
+                d = response.get('datos')
+                datos['datos'] = {'idproyecto': d['idproyecto']}
                 datos['error'] = response.get('error')
 
                 # TODO IGUAL DEVOLVER EL ID DEL PROYECTO CUANDO REDIRIJAMOS AL MENU DEL PROYECTO
 
-                return redirect(url_for('user_menu'))
+                return redirect(url_for('project_menu', idproyecto=d['idproyecto'], datos=datos))
             else:
                 datos['error'] = response.get('error')
         
@@ -182,7 +187,8 @@ def join_project():
     id=session['ID_USER']
     datos = {
                 'user': session['username'],
-                'error': '' 
+                'error': '',
+                'datos': None 
             }
 
     if id is None:
@@ -194,12 +200,13 @@ def join_project():
             response = acceder_proyecto(id, idproyecto, contra)
             
             if response.get('correcto'):
-                datos = response.get('datos')
+                d = response.get('datos')
+                datos['datos'] = {'idproyecto':idproyecto}
                 datos['error'] = response.get('error')
 
                 # TODO IGUAL DEVOLVER EL ID DEL PROYECTO CUANDO REDIRIJAMOS AL MENU DEL PROYECTO
-
-                return redirect(url_for('user_menu'))
+                
+                return redirect(url_for('project_menu', idproyecto=idproyecto, datos=datos))
             else:
                 datos['error'] = response.get('error')
         
@@ -217,6 +224,38 @@ def acceder_proyecto(userid, idproyecto, contra):
         print(f"Error en la solicitud. Código de estado: {response.status_code}")
         return None
 
+
+
+
+#####################
+###  PROJECT_MENU ###
+#####################
+
+
+@app.route('/project_menu/<string:idproyecto>', methods=['POST', 'GET'])
+def project_menu(idproyecto):
+    id=session['ID_USER']
+    if id is None:
+        return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
+    else:  
+        datos = {
+                'user': session['username'],
+                'error': '',
+                'datos': {'idproyecto': idproyecto} 
+            }      
+        return render_template('project_menu.html', idproyecto=idproyecto, datos=datos)
+
+    
+# def project_menu_datos(id):
+#     db_url = "http://flask-api:5001/project_menu"  
+#     payload = {'id': id}
+#     response = requests.get(db_url, json=payload)
+#     if response.status_code == 200:
+#         data = response.json()
+#         return data
+#     else:
+#         print(f"Error en la solicitud. Código de estado: {response.status_code}")
+#         return None
 
 
 if __name__ == '__main__':

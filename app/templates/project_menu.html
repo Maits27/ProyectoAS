@@ -1,0 +1,27 @@
+
+
+  <!DOCTYPE html>
+<html>
+	<head>
+		<title>Proyectos</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css') }}">
+		<link rel="shortcut icon" href="{{ url_for('static', filename='image/user.jpg') }}" />
+	</head>
+	<body>
+		<header>
+            <img width="60px" src="{{ url_for('static', filename='image/user.jpg') }}">
+            <p>{{ datos['user'] }}</p>
+			<button width="60px"><a href="{{ url_for('logout') }}">Logout</a></button>
+        </header>
+		<br>
+		<nav class="menu">
+            <ol>
+              <li class="menu-item"><a href="#0">Dashboards</a></li>
+              <li class="menu-item"><a href="#0">Realizar gestión</a></li>
+              <li class="menu-item"><a href="#0">Chat</a></li>
+            </ol>
+          </nav>
+        <p>ID del proyecto: {{ idproyecto }}</p>
+	</body>
+</html>

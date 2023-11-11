@@ -22,72 +22,8 @@ body {
 
 /* Orrialdearen botoiak */
 
-button {
-  font-family: "Roboto", sans-serif;
-  text-transform: uppercase;
-  outline: 0;
-  background: #129D72;
-  width: 100%;
-  border: 2px solid;
-  padding: 15px;
-  color: #FFFFFF;
-  font-size: 14px;
-  -webkit-transition: all 0.3 ease;
-  transition: all 0.3 ease;
-  cursor: pointer;
-}
-button:hover, button:active, button:focus {
-  background: #129D72;
-}
-button a{
-  font-family: "Roboto", sans-serif;
-  text-transform: uppercase;
-  text-decoration: none;
-  outline: 0;
-  width: 100%;
-  padding: 15px;
-  color: #FFFFFF;
-  font-size: 14px;
-  -webkit-transition: all 0.3 ease;
-  transition: all 0.3 ease;
-  cursor: pointer;
-}
-.home_button{
-  font-family: "Roboto", sans-serif;
-  text-transform: uppercase;
-  display: inline-block;
-  position: relative;
-  outline: 0;
-  background: #129D72;
-  width: 100%;
-  border: 2px solid;
-  padding: 5px;
-  text-align: center;
-  color: #FFFFFF;
-  font-size: 14px;
-  -webkit-transition: all 0.3 ease;
-  transition: all 0.3 ease;
-  cursor: pointer;
-}
-.create_button{
-    font-family: "Roboto", sans-serif;
-    text-transform: uppercase;
-    display: flex; /* Utiliza un contenedor flexible para alinear los elementos verticalmente */
-    flex-direction: column; /* Apila los elementos verticalmente */
-    align-items: center; /* Centra los elementos horizontalmente */
-    position: relative;
-    outline: 0;
-    background: #129D72;
-    width: 100%;
-    border: 2px solid;
-    padding: 5px;
-    text-align: center;
-    color: #FFFFFF;
-    font-size: 14px;
-    -webkit-transition: all 0.3 ease;
-    transition: all 0.3 ease;
-    cursor: pointer;
-  }
+
+
 header{
   background-color: white;
   align-items: center;
@@ -146,9 +82,9 @@ button {
   background: #129D72;
   width: 100%;
   border: 2px solid;
-  padding: 15px;
+  padding: 5px;
   color: #FFFFFF;
-  font-size: 1px;
+  font-size: 16px;
   -webkit-transition: all 0.3 ease;
   transition: all 0.3 ease;
   cursor: pointer;
@@ -170,3 +106,42 @@ button a{
   transition: all 0.3 ease;
   cursor: pointer;
 }
+.home_button{
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  display: inline-block;
+  position: relative;
+  outline: 0;
+  background: #129D72;
+  width: 100%;
+  border: 2px solid;
+  padding: 5px;
+  text-align: center;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+.create_button{
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    display: flex; /* Utiliza un contenedor flexible para alinear los elementos verticalmente */
+    flex-direction: column; /* Apila los elementos verticalmente */
+    align-items: center; /* Centra los elementos horizontalmente */
+    position: relative;
+    outline: 0;
+    background: #02281c;
+    width: 100%;
+    border: 2px solid;
+    padding: 5px;
+    text-align: center;
+    color: #FFFFFF;
+    font-size: 5px;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3 ease;
+    cursor: pointer;
+  }
+  .create_button:hover,.create_button:active {
+    background: #07855d;
+  }
