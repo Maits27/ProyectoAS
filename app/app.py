@@ -13,6 +13,7 @@ def logout():
 
     session.pop('username', None)
     session.pop('project', None)
+    session.pop('transaction', None)
     session.pop('email', None)
     session.pop('ID_USER', None)
     return redirect(url_for('login'))
@@ -119,7 +120,7 @@ def user_menu():
 def user_menu_datos(id):
     db_url = "http://flask-api:5001/user_menu"  
     payload = {'id': id}
-    response = requests.get(db_url, json=payload)
+    response = requests.post(db_url, json=payload)
     if response.status_code == 200:
         data = response.json()
         return data
@@ -139,6 +140,7 @@ def create_project():
     datos = {
                 'user': session['username'],
                 'error': '',
+                'idproyecto': '',
                 'datos': None
             }
 
@@ -153,12 +155,12 @@ def create_project():
             
             if response.get('correcto'):
                 d = response.get('datos')
-                datos['datos'] = {'idproyecto': d['idproyecto']}
                 datos['error'] = response.get('error')
 
                 # TODO IGUAL DEVOLVER EL ID DEL PROYECTO CUANDO REDIRIJAMOS AL MENU DEL PROYECTO
-
-                return redirect(url_for('project_menu', idproyecto=d['idproyecto'], datos=datos))
+                session['project'] = d['idproyecto']
+                datos['idproyecto'] = d['idproyecto']
+                return redirect(url_for('project_menu', datos=datos))
             else:
                 datos['error'] = response.get('error')
         
@@ -188,8 +190,9 @@ def join_project():
     datos = {
                 'user': session['username'],
                 'error': '',
-                'datos': None 
-            }
+                'idproyecto': '',
+                'datos': None
+            }      
 
     if id is None:
         return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
@@ -198,15 +201,16 @@ def join_project():
             idproyecto = request.form["idproyecto"]
             contra = request.form["contrasena"]
             response = acceder_proyecto(id, idproyecto, contra)
+            session['project'] = d['idproyecto']
             
             if response.get('correcto'):
                 d = response.get('datos')
-                datos['datos'] = {'idproyecto':idproyecto}
                 datos['error'] = response.get('error')
 
                 # TODO IGUAL DEVOLVER EL ID DEL PROYECTO CUANDO REDIRIJAMOS AL MENU DEL PROYECTO
                 
-                return redirect(url_for('project_menu', idproyecto=idproyecto, datos=datos))
+                datos['idproyecto'] = d['idproyecto']
+                return redirect(url_for('project_menu', datos=datos))
             else:
                 datos['error'] = response.get('error')
         
@@ -232,18 +236,24 @@ def acceder_proyecto(userid, idproyecto, contra):
 #####################
 
 
-@app.route('/project_menu/<string:idproyecto>', methods=['POST', 'GET'])
-def project_menu(idproyecto):
+@app.route('/project_menu', methods=['POST', 'GET'])
+def project_menu():
     id=session['ID_USER']
+    
+    if request.form["idproyecto"] is not None:
+        session['project'] = request.form["idproyecto"]
+    idproyecto=session['project']
+
     if id is None:
         return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
     else:  
         datos = {
                 'user': session['username'],
                 'error': '',
-                'datos': {'idproyecto': idproyecto} 
+                'idproyecto': idproyecto,
+                'datos': None
             }      
-        return render_template('project_menu.html', idproyecto=idproyecto, datos=datos)
+        return render_template('project_menu.html', datos=datos)
 
     
 # def project_menu_datos(id):

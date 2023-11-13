@@ -24,6 +24,7 @@ services:
     environment:
       - MYSQL_HOST=mysql
 
+
   mysql:
     image: mysql:latest
     environment:
@@ -33,14 +34,20 @@ services:
       - "3306:3306"
     volumes:
       - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+      - datos_mysql:/var/lib/mysql
       
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
     environment:
       PMA_HOST: mysql
-      PMA_USER: root
-      PMA_PASSWORD: test
+      PMA_ARBITRARY: 1
     ports:
       - "8080:80" # Mapea el puerto 8080 para phpMyAdmin
     depends_on:
       - mysql
+
+
+volumes:
+  datos_mysql:

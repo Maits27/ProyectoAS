@@ -1,32 +1,30 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Proyectos</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/lista.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
-		<link rel="shortcut icon" href="{{ url_for('static', filename='image/user.jpg') }}" />
-	</head>
-	<body>
-		<header>
-            <img width="60px" src="{{ url_for('static', filename='image/user.jpg') }}">
-            <p>{{ datos['user'] }}</p>
-			<button width="60px"><a href="{{ url_for('logout') }}">Logout</a></button>
-        </header>
+{% extends 'layout2.html' %}
+
+{% block title %}Proyectos{% endblock %}
+
+{% block content %}
 		<br>
+		<h3>Lista de proyectos:</h3>
 		<div class="laukia">
 			
-			<h3>Lista de proyectos:</h3>
+			
 			{% if datos['info']|length == 0 %}
 				<p>No hay proyectos</p>
 			{% else %}	
 				{% for proyecto in datos['info'] %}
-                	<button><a href="{{ url_for('project_menu', idproyecto=proyecto['idproyecto']) }}"><p>{{ proyecto['nombre'] }}</p></a></button>
+				<form action="{{ url_for('project_menu') }}" method="post">
+					<button type="submit" name="idproyecto" value="{{ proyecto['idproyecto'] }}">
+						{{ proyecto['nombre'] }}
+					</button>
+				</form>
             	{% endfor %}
 			{% endif %}
-			&nbsp
-			<button class="create_button"><a href="{{ url_for('create_project') }}"><p>Crear nuevo proyecto</p></a></button>
-			<button class="create_button"><a href="{{ url_for('join_project') }}"><p>Acceder a proyecto</p></a></button>
+
   
         </div>
-	</body>
-</html>
+		<div class="contenedor-botones">
+			<button class="create_button"><a href="{{ url_for('create_project') }}">Crear nuevo proyecto</a></button>
+			<button class="create_button"><a href="{{ url_for('join_project') }}">Acceder a proyecto nuevo</a></button>
+		</div>
+		<br>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'layout2.html' %}
+
+{% block title %}Transaccion{% endblock %}
+
+{% block content %}
+        <header>
+            <img width="60px" src="{{ url_for('static', filename='image/user.jpg') }}">
+            <p>{{ datos['user'] }}</p>
+        </header>
+        <br>
+        <!-- multistep form -->
+    <form autocomplete="off" id="msform" method="POST" action="{{ url_for('create_project') }}">
+
+        <fieldset>
+            <h2 class="fs-title">Añade productos a la transacción:</h2>
+            <input type="text" id="nombre" name="nombre" placeholder="Nombre del proyecto" required>
+            <input type="number" id="presupuesto" name="presupuesto" placeholder="Presupuesto (no podrás cambiarlo más adelante)" required>
+            <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña para el proyecto" required>
+            <input type="password" id="confirmacion" name="confirmacion" placeholder="Repite la contraseña..." required>
+            <button>Crear</button>
+            <p id="erroreak" class="error_message">
+                <div class="error_message">{{ datos['error'] }}</div>
+            </p>   
+        </fieldset>
+
+{% endblock %}

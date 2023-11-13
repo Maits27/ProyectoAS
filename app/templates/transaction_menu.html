@@ -1,0 +1,24 @@
+{% extends 'layout2.html' %}
+
+{% block title %}Transaccion{% endblock %}
+
+{% block content %}
+      
+<form autocomplete="off" id="msform" method="POST" action="{{ url_for('transaction_menu') }}">
+
+    <fieldset>
+        <h2 class="fs-title">Añade transacción</h2>
+        <input type="text" id="nombre" name="nombre" placeholder="Nombre de la transacción" required>
+        <div class="contenedor-botones">
+            <input type="radio" name="opcion" value="true"> Añadir gasto
+            <input type="radio" name="opcion" value="false"> Añadir saldo
+        </div>
+        <button>Crear</button>
+        <p id="erroreak" class="error_message">
+            <div class="error_message">{{ datos['error'] }}</div>
+        </p>   
+    </fieldset>
+</form> 
+
+
+{% endblock %}

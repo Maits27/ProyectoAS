@@ -117,7 +117,7 @@ def login():
 #####################   
     
 
-@app.route('/user_menu', methods=['GET'])
+@app.route('/user_menu', methods=['POST'])
 def get_user_menu_data():
     # Establecer la conexión a la base de datos MySQL (asegúrate de que MySQL esté configurado)
     data = request.json

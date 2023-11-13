@@ -12,10 +12,121 @@ form {
 }
 
 body {
-  height: 100vh;
-  background: #30c492;
+  background: #29a37a;
   font-family: "Source Sans Pro", sans-serif;
   overflow: hidden;
+  
+}
+.navtop {
+  background-color: #02281c;
+  height: 60px;
+  width: 100%;
+  border: 0;
+}
+.navtop div {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 1000px; /* Establecer un ancho máximo si es necesario */
+  margin: 0 auto;
+  height: 100%;
+}
+
+.navtop div p {
+  font-size: 14px;
+  padding: 10px;
+  margin: 10px;
+  color: #c3d8cb;
+  font-weight: normal;
+}
+.navtop div h1, .navtop div a {
+  display: inline-flex;
+  align-items: center;
+}
+.navtop div h1 {
+  flex: 1;
+  font-size: 16px;
+  padding: 0;
+ margin: 0;
+  color: #c3d8cb;
+  font-weight: normal;
+}
+
+
+.navtop div a {
+  padding: 0 20px;
+  text-decoration: none;
+  color: #c3d8cb;
+  font-weight: bold;
+}
+.navtop div a i {
+  padding: 2px 8px 0 0;
+}
+.navtop div a:hover {
+  color: #f3f4f7;
+}
+body.loggedin {
+  background-color: #f3f4f7;
+}
+.create_button{
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  display: flex; /* Utiliza un contenedor flexible para alinear los elementos verticalmente */
+  flex-direction: column; /* Apila los elementos verticalmente */
+  align-items: center; /* Centra los elementos horizontalmente */
+  position: relative;
+  outline: 0;
+  background: #02281c;
+  width: 50%;
+  border: 2px solid;
+  padding: 1px;
+  text-align: center;
+  color: #FFFFFF;
+  font-size: 5px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+.create_button:hover,.create_button:active {
+  background: #07855d;
+}
+.create_button a:hover {
+  text-decoration: none; /* Elimina el subrayado */
+  color: #fff;
+}
+.content {
+  display: flex;
+  justify-content: flex-start;
+  min-height: 100vh;
+  width: 1000px;
+  margin: 0 auto;
+  align-items: center;
+  flex-direction: column;
+}
+.content h2 {
+  margin: 0;
+  padding: 25px 0;
+  font-size: 22px;
+  border-bottom: 1px solid #c3d8cb;
+  color: rgb(74, 108, 110);
+}
+.content > p, .content > div {
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
+  margin: 25px 0;
+  padding: 25px;
+background-color: #fff;
+}
+.content > p table td, .content > div table td {
+padding: 5px;
+}
+.content > p table td:first-child, .content > div table td:first-child {
+font-weight: bold;
+color: #4a6e64;
+padding-right: 15px;
+}
+.content > div p {
+padding: 5px;
+margin: 0 0 10px 0;
 }
 /*body {
   height: 100vh;
@@ -58,7 +169,7 @@ body {
     content: "";
     width: 1px;
     height: 70%;
-    background: #c3c3d8;
+    background: #fff;
     opacity: 0;
     left: 0;
     top: 15%;
@@ -148,4 +259,197 @@ form {
   background: #129D72;
   font-family: "Source Sans Pro", sans-serif;
   cursor: pointer;
+}
+
+table{
+  margin:auto;
+  background-color: white;
+}
+
+table th{
+  font-family: Arial;
+  font-size: 20px;
+}
+
+.laukia {
+  display: flex;
+  justify-content: center;
+  position: center;
+  z-index: 1;
+  background: #FFFFFF;
+  width: 60%;
+  margin: 0 auto 100px;
+  padding: 45px;
+  text-align: center;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+.laukia a:hover {
+  text-decoration: none; /* Elimina el subrayado */
+  color: #fff;
+}
+
+
+
+.contenedor-donuts {
+  display: flex; /* Utilizar flexbox para alinear elementos en línea */
+  width: 100%;
+  background-color: #c3d8cb; /* Fondo blanco para el contenedor de donuts */
+  justify-content: center; /* Centrar el contenido horizontalmente */
+  align-items: center;
+  padding: 20px; /* Agregar un espacio interno al contenedor */
+  border-radius: 10px; /* Agregar esquinas redondeadas */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}  
+  /*DASHBOARDS*/
+
+.svg-item {
+  display: flex;
+  justify-content: center;
+  background-color: #fff;
+  width: 100%;
+  font-size: 16px;
+  margin: 0 auto;
+  animation: donutfade 1s;
+  padding: 20px;
+}
+
+@keyframes donutfade {
+  /* this applies to the whole svg item wrapper */
+    0% {
+        opacity: .2;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@media (min-width: 992px) {
+    .svg-item {
+        width: 80%;
+    }
+}
+
+.donut-ring {
+    stroke: #1e212b;
+}
+
+.donut-segment {
+    transform-origin: center;
+    stroke: #FF6200;
+}
+
+.donut-segment-2 {
+    stroke: #53C480;
+    animation: donut1 3s;
+}
+
+.donut-segment-3 {
+    stroke: #5381C6;
+    animation: donut2 3s;
+}
+
+.donut-segment-4 {
+    stroke: #f95da4;
+    animation: donut3 3s;
+}
+
+.segment-1{fill:#ccc;}
+.segment-2{fill:#53C480;}
+.segment-3{fill:#5381C6;}
+.segment-4{fill:#f95da4;}
+
+.donut-percent {
+    animation: donutfadelong 1s;
+}
+
+@keyframes donutfadelong {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes donut1 {
+    0% {
+        stroke-dasharray: 0, 100;
+    }
+    100% {
+        stroke-dasharray: 69, 31;
+    }
+}
+
+@keyframes donut2 {
+    0% {
+        stroke-dasharray: 0, 100;
+    }
+    100% {
+        stroke-dasharray: 30, 70;
+    }
+}
+
+@keyframes donut3{
+    0% {
+        stroke-dasharray: 0, 100;
+    }
+    100% {
+        stroke-dasharray: 1, 99;
+    }
+}
+
+.donut-text {
+    font-family: Arial, Helvetica, sans-serif;
+    fill: #FF6200;
+}
+.donut-text-1 {
+    fill: #53C480;
+}
+.donut-text-2 {
+    fill: #5381C6;
+}
+.donut-text-3 {
+    fill: #f95da4;
+}
+
+.donut-label {
+    font-size: 0.28em;
+    font-weight: 700;
+    line-height: 1;
+    fill: #000;
+    transform: translateY(0.25em);
+}
+
+.donut-percent {
+    font-size: 0.5em;
+    line-height: 1;
+    transform: translateY(0.5em);
+    font-weight: bold;
+}
+
+.donut-data {
+    font-size: 0.12em;
+    line-height: 1;
+    transform: translateY(0.5em);
+    text-align: center;
+    text-anchor: middle;
+    color:#49576d;
+    fill: #49576d;
+    animation: donutfadelong 1s;
+}
+
+
+
+
+/*///////////////////////////////////*/
+.donut {
+  box-shadow: 5px 5px 15px rgb(0 0 0 / 20%), -5px -5px 15px rgb(255 255 255 / 5%), inset -5px -5px 10px rgb(255 255 255 / 5%), inset 5px 5px 10px rgb(0 0 0 / 20%);
+  border-radius:50%;
+}
+
+footer {
+  background-color: #f2f2f2;
+  padding: 10px;
+  text-align: center;
+  margin-top: auto;
 }

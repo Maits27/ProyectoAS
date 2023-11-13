@@ -1,27 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block title %}Proyectos{% endblock %}
+
+{% block content %}
 
 
-  <!DOCTYPE html>
-<html>
-	<head>
-		<title>Proyectos</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css') }}">
-		<link rel="shortcut icon" href="{{ url_for('static', filename='image/user.jpg') }}" />
-	</head>
-	<body>
-		<header>
-            <img width="60px" src="{{ url_for('static', filename='image/user.jpg') }}">
-            <p>{{ datos['user'] }}</p>
-			<button width="60px"><a href="{{ url_for('logout') }}">Logout</a></button>
-        </header>
-		<br>
-		<nav class="menu">
-            <ol>
-              <li class="menu-item"><a href="#0">Dashboards</a></li>
-              <li class="menu-item"><a href="#0">Realizar gestión</a></li>
-              <li class="menu-item"><a href="#0">Chat</a></li>
-            </ol>
-          </nav>
-        <p>ID del proyecto: {{ idproyecto }}</p>
-	</body>
-</html>
+
+<div class="contenedor-donuts">
+  <div class="svg-item">
+    <svg width="60%" height="60%" viewBox="0 0 40 40" class="donut">
+      <circle class="donut-hole" cx="20" cy="20" r="15.91549430918954" fill="#202631"></circle>
+      <circle class="donut-ring" cx="20" cy="20" r="15.91549430918954" fill="transparent" stroke-width="3.5"></circle>
+      <circle class="donut-segment donut-segment-3" cx="20" cy="20" r="15.91549430918954" fill="transparent" stroke-width="3.5" stroke-dasharray="30 70" stroke-dashoffset="25"></circle>
+      <g class="donut-text donut-text-2">
+  
+        <text y="50%" transform="translate(0, 2)">
+          <tspan x="50%" text-anchor="middle" class="donut-percent">30%</tspan>   
+        </text>
+        <text y="60%" transform="translate(0, 2)">
+          <tspan x="50%" text-anchor="middle" class="donut-data">1500 widgets</tspan>   
+        </text>
+      </g>
+    </svg>
+  </div>
+  
+  <div class="svg-item">
+    <svg width="60%" height="60%" viewBox="0 0 40 40" class="donut">
+      <circle class="donut-hole" cx="20" cy="20" r="15.91549430918954" fill="#202631"></circle>
+      <circle class="donut-ring" cx="20" cy="20" r="15.91549430918954" fill="transparent" stroke-width="3.5"></circle>
+      <circle class="donut-segment donut-segment-4" cx="20" cy="20" r="15.91549430918954" fill="transparent" stroke-width="3.5" stroke-dasharray="1 99" stroke-dashoffset="25"></circle>
+      <g class="donut-text donut-text-3">
+  
+        <text y="50%" transform="translate(0, 2)">
+          <tspan x="50%" text-anchor="middle" class="donut-percent">1%</tspan>   
+        </text>
+        <text y="60%" transform="translate(0, 2)">
+          <tspan x="50%" text-anchor="middle" class="donut-data">50 widgets</tspan>   
+        </text>
+      </g>
+    </svg>
+  </div>
+</div>
+      
+{% endblock %}

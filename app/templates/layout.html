@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>{% block title %}{% endblock %}</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
+		<link rel="shortcut icon" href="{{ url_for('static', filename='image/user.jpg') }}">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+	</head>
+	<body class="loggedin">
+        <header>
+            <img width="60px" src="{{ url_for('static', filename='image/user.jpg') }}">
+            <p>{{ datos['user'] }}</p>
+        </header>
+		<nav class="navtop">
+			<div>
+				<p>ID del proyecto: {{ datos['idproyecto'] }}</p>
+				<h1><a href="{{ url_for('user_menu') }}"><i class="fas fa-home"></i> Menu de proyectos</a></h1>
+				<h1><a href="{{ url_for('project_menu') }}"><i class="fas fa-lightbulb"></i> Información de proyecto</a></h1>
+				<h1><a href="{{ url_for('transaction_menu') }}"><i class="fas fa-euro-sign"></i> Nueva transacción</a></h1>
+				<h1><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a></h1>
+			</div>
+		</nav>
+		<div class="content">
+			{% block content %}{% endblock %}
+		</div>
+		<footer><p>ID del proyecto: {{ idproyecto }}</p></footer>
+	</body>
+</html>

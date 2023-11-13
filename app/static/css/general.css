@@ -22,6 +22,12 @@ body {
 
 /* Orrialdearen botoiak */
 
+.contenedor-botones {
+  display: flex; /* Utilizar flexbox para alinear elementos en línea */
+  width: 60%;
+}
+
+/* Estilo para cada botón */
 
 
 header{
@@ -52,11 +58,6 @@ header p{
   position: sticky;
   padding: 5px;
 }
-
-
-
-
-
 
 .menua {
   width: 700px;
@@ -132,9 +133,9 @@ button a{
     position: relative;
     outline: 0;
     background: #02281c;
-    width: 100%;
+    width: 60%;
     border: 2px solid;
-    padding: 5px;
+    padding: 1px;
     text-align: center;
     color: #FFFFFF;
     font-size: 5px;
