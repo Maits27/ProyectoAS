@@ -23,10 +23,10 @@
 				<h1><a href="{{ url_for('transaction_menu') }}"><i class="fas fa-euro-sign"></i> Nueva transacción</a></h1>
 				<h1><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a></h1>
 			</div>
+			<p>Presupuesto restante: {{ datos['presupuesto'] }} </p>
 		</nav>
 		<div class="content">
 			{% block content %}{% endblock %}
 		</div>
-		<footer><p>ID del proyecto: {{ idproyecto }}</p></footer>
 	</body>
 </html>

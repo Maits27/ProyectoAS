@@ -268,44 +268,74 @@ def join_project():
     finally:
         cursor.close()
 
+#####################
+### PROJECT MENU  ###
+#####################
 
+@app.route('/project_menu', methods=['POST'])
+def project_menu():
+    # ... (mover la lógica de registro de usuario aquí)
+    data = request.json
+    idproyecto = data.get('idproyecto')
 
-# #####################
-# ###  PROJECT_MENU ###
-# #####################  
-    
+    resultado = {
+        'correcto': False,
+        'error': '',
+        'datos': None
+    }
 
-# @app.route('/project_menu', methods=['GET'])
-# def get_project_menu_data():
-#     # Establecer la conexión a la base de datos MySQL (asegúrate de que MySQL esté configurado)
-#     data = request.json
-#     id = data.get('id')
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT presupuesto FROM proyecto WHERE id = %s', (idproyecto,))
+        presupuesto=cursor.fetchone()
 
-#     resultado = {
-#         'correcto': False,
-#         'error': '',
-#         'datos': []
-#     }
-#     try:
-#         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-#         cursor.execute('SELECT proyecto.* FROM proyecto JOIN proyectosUsuario ON proyecto.id = proyectosUsuario.IdProyecto WHERE proyectosUsuario.IdUsuario = %s', (id,))
-#         proyectos = cursor.fetchall()
+        resultado['correcto'] = True
+        resultado['datos'] = {'transactionId': presupuesto['presupuesto']}
+        return resultado
+    except Exception as e:
+    # Manejo de excepciones
+        print(f"Error en el registro de usuario: {e}")
+        resultado['error'] = str(e)
+        return resultado
+    finally:
+        cursor.close()
 
-#         if proyectos:
-#             data=[]
-#             for proyecto in proyectos:
-#                 data.append({'idproyecto':proyecto['id'], 'nombre': proyecto['nombre']})
-#             resultado['correcto'] = True
-#             resultado['datos'] = data
-        
-#     except Exception as e:
-#     # Manejo de excepciones
-#         print(f"Error en el registro de usuario: {e}")
-#         resultado['error'] = str(e)
-#     finally:
-#         cursor.close()
-    
-#     return resultado
+#####################
+###  TRANSACTION  ###
+#####################
+
+@app.route('/transaction_menu', methods=['POST'])
+def transaction_menu():
+    # ... (mover la lógica de registro de usuario aquí)
+    data = request.json
+    userid = data.get('userid')
+    idproyecto = data.get('idproyecto')
+    nombre = data.get('nombre')
+    opcion = data.get('opcion')
+
+    resultado = {
+        'correcto': False,
+        'error': '',
+        'datos': None
+    }
+
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('INSERT INTO transaccion (nombre, gasto, IdUsuario, IdProyecto) VALUES (%s, %s, %s, %s)', (nombre, opcion, userid, idproyecto,))
+        transactionId = cursor.lastrowid
+        mysql.connection.commit()
+
+        resultado['correcto'] = True
+        resultado['datos'] = {'transactionId': transactionId}
+        return resultado
+    except Exception as e:
+    # Manejo de excepciones
+        print(f"Error en el registro de usuario: {e}")
+        resultado['error'] = str(e)
+        return resultado
+    finally:
+        cursor.close()
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
