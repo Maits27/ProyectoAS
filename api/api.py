@@ -257,13 +257,12 @@ def join_project():
             resultado['correcto'] = True
             resultado['error'] = 'NO HAY ERROR'
             resultado['datos'] = {'idproyecto': idproyecto}
-       
+        resultado['datos'] = 'proyecto'
         return resultado
     except Exception as e:
     # Manejo de excepciones
         print(f"Error al acceder al proyecto: {e}")
         resultado['error'] = str(e)
-        mysql.connection.rollback()
         return resultado
     finally:
         cursor.close()
@@ -287,17 +286,19 @@ def project_menu():
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT presupuesto FROM proyecto WHERE id = %s', (idproyecto,))
-        presupuesto=cursor.fetchone()
+        presupuesto=cursor.fetchone()['presupuesto']
         if presupuesto:
             resultado['correcto'] = True
-            resultado['datos'] = {'presupuesto': presupuesto['presupuesto']}
+            resultado['datos'] = {'presupuesto': presupuesto}
         else:
             resultado['error'] = 'No hay ese proyecto'
+            resultado['datos'] = {'presupuesto': 0}
         return resultado
     except Exception as e:
     # Manejo de excepciones
         print(f"Error en el registro de usuario: {e}")
         resultado['error'] = str(e)
+        resultado['datos'] = {'presupuesto': 0}
         return resultado
     finally:
         cursor.close()
@@ -337,17 +338,24 @@ def transaction_menu():
         cursor.execute('UPDATE transaccion SET valor = %s WHERE id = %s', (precioTotal, transactionId))
         mysql.connection.commit()
 
-        cursor.execute('SELECT presupuesto FROM proyecto WHERE id = %s', (idproyecto,))
-        presupuesto = cursor.fetchone()['presupuesto']
+        cursor.execute('SELECT presupuesto, presupuestoInicial FROM proyecto WHERE id = %s', (idproyecto,))
+        info = cursor.fetchone()
+        presupuesto = info['presupuesto']
+        presupuestoInicial = info['presupuestoInicial']
 
         # Actualizar el presupuesto del proyecto
-        if opcion=='1':
+        if opcion == '1':
             presupuesto -= precioTotal
+            cursor.execute('UPDATE proyecto SET presupuesto = %s WHERE id = %s', (presupuesto, idproyecto))
+            mysql.connection.commit()
         else:
             presupuesto += precioTotal
-
-        cursor.execute('UPDATE proyecto SET presupuesto = %s WHERE id = %s', (presupuesto, idproyecto))
-        mysql.connection.commit()
+            presupuestoInicial += precioTotal
+            cursor.execute('UPDATE proyecto SET presupuesto = %s WHERE id = %s', (presupuesto, idproyecto))
+            mysql.connection.commit()
+            cursor.execute('UPDATE proyecto SET presupuestoInicial = %s WHERE id = %s', (presupuestoInicial, idproyecto))
+            mysql.connection.commit()
+            
 
         resultado['correcto'] = True
         resultado['datos'] = {'transactionId': transactionId}
@@ -381,6 +389,8 @@ def dashboards():
         cursor.execute('SELECT presupuestoInicial FROM proyecto WHERE id = %s', (idproyecto,))
         presupuestoInicial = cursor.fetchone()['presupuestoInicial']
         
+        cursor.execute('SELECT presupuesto FROM proyecto WHERE id = %s', (idproyecto,))
+        presupuesto = cursor.fetchone()['presupuesto']
 
         cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Otros' and transaccion.IdProyecto = %s", (idproyecto,))
         otros = cursor.fetchone()['total']
@@ -411,6 +421,8 @@ def dashboards():
         resultado['correcto'] = True
         resultado['datos'] = {
             'presupuestoInicial': presupuestoInicial,
+            'utilizado': presupuestoInicial-presupuesto,
+            'restante': presupuesto,
             'categorias':{
                 'Otros': int(otros/presupuestoInicial)*100,
                 'Comida': int(comida/presupuestoInicial)*100,
@@ -420,6 +432,98 @@ def dashboards():
                 'Material': int(material/presupuestoInicial)*100
             }
         }
+        return resultado
+    except Exception as e:
+    # Manejo de excepciones
+        print(f"Error en el registro de usuario: {e}")
+        resultado['error'] = str(e)
+        return resultado
+    finally:
+        cursor.close()
+
+
+########################
+### LIST_TRANSACTION ###
+########################
+@app.route('/list_transaction', methods=['POST', 'GET'])
+def list_transaction():
+    data = request.json
+    idproyecto = data.get('idproyecto')
+
+    resultado = {
+        'correcto': False,
+        'error': '',
+        'datos': []
+    }
+
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM transaccion WHERE IdProyecto = %s', (idproyecto,))
+        transacciones = cursor.fetchall()
+        
+        if transacciones:
+            resultado['correcto'] = True
+            for transaccion in transacciones:
+                simbolo='+'
+                if transaccion['gasto']==1: simbolo='-'
+                resultado['datos'].append({
+                    'id': transaccion['id'],
+                    'nombre':transaccion['nombre'],
+                    'valor': simbolo + ' ' + str(transaccion['valor'])
+                }) 
+        return resultado
+    except Exception as e:
+    # Manejo de excepciones
+        print(f"Error en el registro de usuario: {e}")
+        resultado['error'] = str(e)
+        return resultado
+    finally:
+        cursor.close()
+
+
+@app.route('/delete_transaction', methods=['POST', 'GET'])
+def delete_transaction():
+    data = request.json
+    idTransaccion = data.get('idTransaccion')
+
+    resultado = {
+        'correcto': False,
+        'error': '',
+        'datos': None
+    }
+
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+        cursor.execute('SELECT gasto, valor, IdProyecto FROM transaccion WHERE IdTransaccion = %s', (idTransaccion,))
+        transaccion = cursor.fetchone()
+
+        if transaccion:
+
+            cursor.execute('SELECT presupuesto, presupuestoInicial FROM proyecto WHERE id = %s', (transaccion['IdProyecto'],))
+            presupuesto = cursor.fetchone()
+
+            if transaccion['gasto'] == 1:
+                nuevoPresupuesto = presupuesto['presupuesto']+transaccion['valor']
+                cursor.execute('UPDATE proyecto SET presupuesto = %s WHERE id = %s', (nuevoPresupuesto, transaccion['IdProyecto']))
+                mysql.connection.commit()
+            else:
+                nuevoPresupuesto = presupuesto['presupuesto']-transaccion['valor']
+                cursor.execute('UPDATE proyecto SET presupuesto = %s WHERE id = %s', (nuevoPresupuesto, transaccion['IdProyecto']))
+                mysql.connection.commit()
+
+                nuevoPresupuesto = presupuesto['presupuestoInicial']-transaccion['valor']
+                cursor.execute('UPDATE proyecto SET presupuestoInicial = %s WHERE id = %s', (nuevoPresupuesto, transaccion['IdProyecto']))
+                mysql.connection.commit()
+
+            cursor.execute('DELETE FROM producto WHERE IdTransaccion = %s', (idTransaccion,))
+            mysql.connection.commit()
+
+            cursor.execute('DELETE FROM transaccion WHERE id = %s', (idTransaccion,))
+            mysql.connection.commit()
+
+            resultado['correcto'] = True
+        
         return resultado
     except Exception as e:
     # Manejo de excepciones

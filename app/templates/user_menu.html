@@ -13,10 +13,11 @@
 			{% else %}	
 				{% for proyecto in datos['info'] %}
 				<form action="{{ url_for('project_menu') }}" method="post">
-					<button type="submit" name="idproyecto" value="{{ proyecto['idproyecto'] }}">
+					<button class="boton-proyecto" type="submit" name="idproyecto" value="{{ proyecto['idproyecto'] }}">
 						{{ proyecto['nombre'] }}
 					</button>
 				</form>
+
             	{% endfor %}
 			{% endif %}
 

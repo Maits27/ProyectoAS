@@ -4,22 +4,6 @@
 
 /* Orrialdearen konfigurazio orokorra */
 
-body {
-    background: #1cdda0; /* fallback for old browsers */
-    background: hsl(98, 40%, 60%);
-    background: linear-gradient(90deg, rgba(141,194,111,1) 0%, rgba(118,184,82,1) 50%);
-    background-image: url("../irudiak/fondo.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center fixed;
-    font-family: "Roboto", sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;   
-    overflow: scroll;   
-}
 
 /* Orrialdearen botoiak */
 

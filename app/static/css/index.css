@@ -14,6 +14,7 @@ form {
 body {
   background: #29a37a;
   font-family: "Source Sans Pro", sans-serif;
+  overflow: scroll;   
   
 }
 
@@ -27,7 +28,7 @@ body {
   display: flex;
   justify-content: flex-start;
   width: 100%;
-  max-width: 1000px; /* Establecer un ancho máximo si es necesario */
+  max-width: 1500px; /* Establecer un ancho máximo si es necesario */
   margin: 0 auto;
   height: 100%;
 }
@@ -103,6 +104,15 @@ body.loggedin {
   align-items: center;
   flex-direction: column;
 }
+.content-menu {
+  display: flex;
+  justify-content:center;
+  min-height: 83vh;
+  width: 1000px;
+  margin: 0 auto;
+  align-items: center;
+  flex-direction: column;
+}
 .content h2 {
   margin: 0;
   padding: 25px 0;
@@ -110,6 +120,21 @@ body.loggedin {
   border-bottom: 1px solid #c3d8cb;
   color: rgb(74, 108, 110);
 }
+.content-menu h2 {
+  margin: 0;
+  padding: 25px 0;
+  font-size: 40px;
+  border-bottom: 1px solid #c3d8cb;
+  color: rgb(42, 62, 63);
+}
+.content-menu h1 {
+  margin: 0;
+  padding: 25px 0;
+  font-size: 70px;
+  border-bottom: 1px solid #c3d8cb;
+  color: rgb(13, 19, 20);
+}
+
 .content > p, .content > div {
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
   margin: 25px 0;
@@ -222,7 +247,7 @@ margin: 0 0 10px 0;
 }
 
 form {
-  width: 70%;
+  width: 100%;
   > * {
     margin: 10px;
   }
@@ -247,8 +272,7 @@ form {
     }
   }
 }
-
-.button {
+.button boton-proyecto{
   width: 100%;
   height: 30px;
   border: 0;
@@ -262,25 +286,51 @@ form {
   font-family: "Source Sans Pro", sans-serif;
   cursor: pointer;
 }
-
+.button {
+  width: 60%;
+  height: 30px;
+  border: 0;
+  outline: 0;
+  color: white;
+  font-size: 15px;
+  font-weight: 400;
+  position: relative;
+  z-index: 3;
+  background: #129D72;
+  font-family: "Source Sans Pro", sans-serif;
+  cursor: pointer;
+}
+.button boton-delete{
+  display: flex;
+  justify-content: center;
+  background-color: #c9bebe;
+}
 table{
   margin:auto;
   background-color: white;
+  border: 1;
+  border-color: #000;
+  width: max-content;
+  text-align: center;
 }
 
 table th{
   font-family: Arial;
   font-size: 20px;
+  width: max-content;
+  text-align: center;
 }
 
 .laukia {
   position: relative;
+  display: flex;
+  justify-content: center;
   z-index: 1;
   background: #FFFFFF;
   width: 60%;
   margin: 0 auto 100px;
   padding: 45px;
-  position: relative;
+  -ms-flex-align: center;
   text-align: center;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
   display: flex;

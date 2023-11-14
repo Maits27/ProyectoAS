@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+
+{% block title %}Proyectos{% endblock %}
+
+{% block content %}
+
+
+<h2>Transacciones realizadas:</h2>
+<div class="laukia">
+  <table border="1">
+    
+    {% if datos['datos']|length == 0 %}
+      <p>No hay transacciones aún para este proyecto</p>
+    {% else %}
+      <tr>
+        <th>Nombre</th>
+        <th>Cantidad</th>	
+      </tr>
+      {% for transaccion in datos['datos'] %}
+        <tr>
+          <td>{{ transaccion['nombre'] }}</td>
+          <td>{{ transaccion['valor'] }}</td> 
+          <td><button><a href="{{ url_for('delete_transaction', idTransaccion=transaccion['id']) }}"><img src="{{ url_for('static', filename='image/papelera.png') }}" width=30></a></button></td>
+        </tr>
+      {% endfor %}
+    {% endif %}		
+  </table>
+</div>
+
+
+{% endblock %}
