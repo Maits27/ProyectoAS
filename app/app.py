@@ -27,7 +27,7 @@ def logout():
     session.pop('transaction', None)
     session.pop('email', None)
     session.pop('ID_USER', None)
-    return redirect(url_for('login'))
+    return redirect(url_for('register'))
 
 
 #####################
@@ -118,7 +118,7 @@ def user_menu():
     proyecto_json = ''
 
     if id is None:
-        return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
+        return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
     else:
         response = user_menu_datos(id)
         proyecto_json = response.get('datos')
@@ -158,7 +158,7 @@ def create_project():
             }
 
     if id is None:
-        return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
+        return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
     else:
         if request.method == 'POST':
             nombre = request.form["nombre"]
@@ -208,7 +208,7 @@ def join_project():
             }      
 
     if id is None:
-        return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
+        return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
     else:
         if request.method == 'POST':
             idproyecto = request.form["idproyecto"]
@@ -258,7 +258,7 @@ def project_menu():
     idproyecto=session['project']
 
     if id is None:
-        return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
+        return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
     else:
         response = get_presupuesto(idproyecto)  
         d=response.get('datos')
@@ -286,7 +286,6 @@ def project_menu():
 #####################
 ###  TRANSACTION  ###
 #####################
-
 @app.route('/transaction_menu', methods=['POST', 'GET'])
 def transaction_menu():
     id=session['ID_USER']
@@ -299,26 +298,26 @@ def transaction_menu():
                 'presupuesto': None,
                 'datos': None
             }      
-
     if id is None:
-        return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
+        return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
     else:
+        postea = False
         if request.method == 'POST':
+            postea = True
             nombre = request.form["nombre"]
-
             opcion = request.form["opcion"]
 
-            productos = []
-            for producto in request.form.getlist('elementosDinamicos[]'):
-                p = {
-                "nombreproducto": producto["nombreproducto"],
-                "cantidad": producto["cantidad"],
-                "precio": producto["precio"],
-                "categoria": producto["categoria"]
-                }
-                productos.append(p)
+            elementos_dinamicos = []
 
-            response = anadir_transaccion(id, idproyecto, nombre, opcion, productos)
+            # Obtén los datos de los elementos dinámicos
+            elementos_dinamicos.append({
+                        'nombreproducto': request.form["nombreproducto"],
+                        'cantidad': int(request.form["cantidad"]),
+                        'precio': float(request.form["precio"]),
+                        'categoria': request.form["categoria"],
+                     })
+
+            response = anadir_transaccion(id, idproyecto, nombre, opcion, elementos_dinamicos)
             
             if response.get('correcto'):
                 d = response.get('datos')
@@ -329,7 +328,8 @@ def transaction_menu():
                 return redirect(url_for('transaction_menu', datos=datos))
             else:
                 datos['error'] = response.get('error')
-
+                datos['datos'] = 'todo mal'
+        if not postea: datos['datos'] = 'No ha hecho post'
 
         response = get_presupuesto(idproyecto)
         d = response.get('datos')
@@ -348,6 +348,72 @@ def anadir_transaccion(userid, idproyecto, nombre, opcion, productos):
     else:
         print(f"Error en la solicitud. Código de estado: {response.status_code}")
         return None
+# @app.route('/transaction_menu', methods=['POST', 'GET'])
+# def transaction_menu():
+#     id=session['ID_USER']
+#     idproyecto=session['project']
+#     datos = {
+#                 'user': session['username'],
+#                 'error': '',
+#                 'transactionId': '', 
+#                 'idproyecto': idproyecto,
+#                 'presupuesto': None,
+#                 'datos': None
+#             }      
+#     if id is None:
+#         return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
+#     else:
+#         postea = False
+#         if request.method == 'POST':
+#             postea = True
+#             nombre = request.form["nombre"]
+#             opcion = request.form["opcion"]
+
+#             elementos_dinamicos = []
+
+#             # Obtén los datos de los elementos dinámicos
+#             for key, value in request.form.items():
+#                 if key.startswith('nombreproducto_'):
+#                     elemento_id = key.split('_')[-1]
+#                     elemento = {
+#                         'nombreproducto': value,
+#                         'cantidad': request.form.get('cantidad_' + elemento_id),
+#                         'precio': request.form.get('precio_' + elemento_id),
+#                         'categoria': request.form.get('categoria_' + elemento_id),
+#                     }
+#                     elementos_dinamicos.append(elemento)
+
+#             response = anadir_transaccion(id, idproyecto, nombre, opcion, elementos_dinamicos)
+            
+#             if response.get('correcto'):
+#                 d = response.get('datos')
+#                 datos['error'] = response.get('error')
+#                 datos['transactionId'] = d['transactionId']
+#                 datos['idproyecto'] = idproyecto
+#                 datos['datos']={'mensaje':'Se ha añadido correctamente la transacción.'}
+#                 return redirect(url_for('transaction_menu', datos=datos))
+#             else:
+#                 datos['error'] = response.get('error')
+#                 datos['datos'] = 'todo mal'
+#         if not postea: datos['datos'] = 'No ha hecho post'
+
+#         response = get_presupuesto(idproyecto)
+#         d = response.get('datos')
+#         datos['presupuesto'] = d['presupuesto']
+        
+#         return render_template('transaction_menu.html', datos=datos)
+
+    
+# def anadir_transaccion(userid, idproyecto, nombre, opcion, productos):
+#     db_url = "http://flask-api:5001/transaction_menu"  
+#     payload = {'userid': userid, 'idproyecto': idproyecto, 'nombre': nombre, 'opcion': opcion, 'productos': productos}
+#     response = requests.post(db_url, json=payload)
+#     if response.status_code == 200:
+#         data = response.json()
+#         return data
+#     else:
+#         print(f"Error en la solicitud. Código de estado: {response.status_code}")
+#         return None
 
 
 
@@ -412,7 +478,7 @@ def dashboards():
     idproyecto=session['project']
 
     if id is None:
-        return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
+        return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
     else:
         response = dashboards_por_categoria(idproyecto) 
         d= response.get('datos')
