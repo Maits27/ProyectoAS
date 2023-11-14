@@ -301,36 +301,50 @@ def transaction_menu():
     if id is None:
         return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
     else:
-        postea = False
         if request.method == 'POST':
-            postea = True
             nombre = request.form["nombre"]
             opcion = request.form["opcion"]
 
             elementos_dinamicos = []
-
+            indice = 0
             # Obtén los datos de los elementos dinámicos
-            elementos_dinamicos.append({
-                        'nombreproducto': request.form["nombreproducto"],
-                        'cantidad': int(request.form["cantidad"]),
-                        'precio': float(request.form["precio"]),
-                        'categoria': request.form["categoria"],
-                     })
+            for key in request.form.keys():
+                # Verificar si la clave es un elemento dinámico
+                if key.startswith("nombreproducto"):
+                    # Extraer el índice del nombre de la clave
+                    indice += 1
+                    
+                    # Obtener los valores del elemento dinámico
+            for i in range(indice):
+                nombre_producto = request.form[f'nombreproducto{i}']
+                cantidad = int(request.form[f'cantidad{i}'])
+                precio = float(request.form[f'precio{i}'])
+                categoria = request.form[f'categoria{i}']
 
-            response = anadir_transaccion(id, idproyecto, nombre, opcion, elementos_dinamicos)
+                # Verificar si se encontró un elemento con ese índice
+                if nombre_producto is not None:
+                    elemento = {
+                        'nombreproducto': nombre_producto,
+                        'cantidad': cantidad,
+                        'precio': precio,
+                        'categoria': categoria,
+                    }
+                    elementos_dinamicos.append(elemento)
+            if len(elementos_dinamicos) >0:
+                response = anadir_transaccion(id, idproyecto, nombre, opcion, elementos_dinamicos)
             
-            if response.get('correcto'):
-                d = response.get('datos')
-                datos['error'] = response.get('error')
-                datos['transactionId'] = d['transactionId']
-                datos['idproyecto'] = idproyecto
-                datos['datos']={'mensaje':'Se ha añadido correctamente la transacción.'}
-                return redirect(url_for('transaction_menu', datos=datos))
+                if response.get('correcto'):
+                    d = response.get('datos')
+                    datos['error'] = response.get('error')
+                    datos['transactionId'] = d['transactionId']
+                    datos['idproyecto'] = idproyecto
+                    datos['datos']={'mensaje':'Se ha añadido correctamente la transacción.'}
+                else:
+                    datos['error'] = response.get('error')
+                    datos['datos'] = 'todo mal'
             else:
-                datos['error'] = response.get('error')
-                datos['datos'] = 'todo mal'
-        if not postea: datos['datos'] = 'No ha hecho post'
-
+                    datos['error'] = 'NO HAY ELEMENTOS'
+                    datos['datos'] = 'todo fatal'
         response = get_presupuesto(idproyecto)
         d = response.get('datos')
         datos['presupuesto'] = d['presupuesto']
@@ -348,60 +362,6 @@ def anadir_transaccion(userid, idproyecto, nombre, opcion, productos):
     else:
         print(f"Error en la solicitud. Código de estado: {response.status_code}")
         return None
-# @app.route('/transaction_menu', methods=['POST', 'GET'])
-# def transaction_menu():
-#     id=session['ID_USER']
-#     idproyecto=session['project']
-#     datos = {
-#                 'user': session['username'],
-#                 'error': '',
-#                 'transactionId': '', 
-#                 'idproyecto': idproyecto,
-#                 'presupuesto': None,
-#                 'datos': None
-#             }      
-#     if id is None:
-#         return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
-#     else:
-#         postea = False
-#         if request.method == 'POST':
-#             postea = True
-#             nombre = request.form["nombre"]
-#             opcion = request.form["opcion"]
-
-#             elementos_dinamicos = []
-
-#             # Obtén los datos de los elementos dinámicos
-#             for key, value in request.form.items():
-#                 if key.startswith('nombreproducto_'):
-#                     elemento_id = key.split('_')[-1]
-#                     elemento = {
-#                         'nombreproducto': value,
-#                         'cantidad': request.form.get('cantidad_' + elemento_id),
-#                         'precio': request.form.get('precio_' + elemento_id),
-#                         'categoria': request.form.get('categoria_' + elemento_id),
-#                     }
-#                     elementos_dinamicos.append(elemento)
-
-#             response = anadir_transaccion(id, idproyecto, nombre, opcion, elementos_dinamicos)
-            
-#             if response.get('correcto'):
-#                 d = response.get('datos')
-#                 datos['error'] = response.get('error')
-#                 datos['transactionId'] = d['transactionId']
-#                 datos['idproyecto'] = idproyecto
-#                 datos['datos']={'mensaje':'Se ha añadido correctamente la transacción.'}
-#                 return redirect(url_for('transaction_menu', datos=datos))
-#             else:
-#                 datos['error'] = response.get('error')
-#                 datos['datos'] = 'todo mal'
-#         if not postea: datos['datos'] = 'No ha hecho post'
-
-#         response = get_presupuesto(idproyecto)
-#         d = response.get('datos')
-#         datos['presupuesto'] = d['presupuesto']
-        
-#         return render_template('transaction_menu.html', datos=datos)
 
     
 # def anadir_transaccion(userid, idproyecto, nombre, opcion, productos):
