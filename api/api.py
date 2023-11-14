@@ -384,16 +384,28 @@ def dashboards():
 
         cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Otros' and transaccion.IdProyecto = %s", (idproyecto,))
         otros = cursor.fetchone()['total']
+        if otros is None:
+            otros = 0.0
         cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Comida' and transaccion.IdProyecto = %s", (idproyecto,))
         comida = cursor.fetchone()['total']
+        if comida is None:
+            comida = 0.0
         cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Vivienda' and transaccion.IdProyecto = %s", (idproyecto,))
         vivienda = cursor.fetchone()['total']
+        if vivienda is None:
+            vivienda = 0.0
         cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Ropa' and transaccion.IdProyecto = %s", (idproyecto,))
         ropa = cursor.fetchone()['total']
+        if ropa is None:
+            ropa = 0.0
         cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Actividades' and transaccion.IdProyecto = %s", (idproyecto,))
         actividades = cursor.fetchone()['total']
+        if actividades is None:
+            actividades = 0.0
         cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Material' and transaccion.IdProyecto = %s", (idproyecto,))
         material = cursor.fetchone()['total']
+        if material is None:
+            material = 0.0
 
 
         resultado['correcto'] = True
