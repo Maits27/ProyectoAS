@@ -380,9 +380,7 @@ def dashboards():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT presupuestoInicial FROM proyecto WHERE id = %s', (idproyecto,))
         presupuestoInicial = cursor.fetchone()['presupuestoInicial']
-        resultado['datos'] = {
-            'presupuestoInicial': presupuestoInicial
-        }
+        
 
         cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Otros' and transaccion.IdProyecto = %s", (idproyecto,))
         otros = cursor.fetchone()['total']
@@ -402,12 +400,12 @@ def dashboards():
         resultado['datos'] = {
             'presupuestoInicial': presupuestoInicial,
             'categorias':{
-                'Otros': otros,
-                'Comida': comida,
-                'Vivienda': vivienda,
-                'Ropa': ropa,
-                'Actividades': actividades,
-                'Material': material
+                'Otros': int(otros/presupuestoInicial)*100,
+                'Comida': int(comida/presupuestoInicial)*100,
+                'Vivienda': int(vivienda/presupuestoInicial)*100,
+                'Ropa': int(ropa/presupuestoInicial)*100,
+                'Actividades': int(actividades/presupuestoInicial)*100,
+                'Material': int(material/presupuestoInicial)*100
             }
         }
         return resultado

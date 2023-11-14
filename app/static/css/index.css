@@ -345,17 +345,14 @@ table th{
 
 .donut-segment-2 {
     stroke: #53C480;
-    animation: donut1 3s;
 }
 
 .donut-segment-3 {
     stroke: #5381C6;
-    animation: donut2 3s;
 }
 
 .donut-segment-4 {
     stroke: #f95da4;
-    animation: donut3 3s;
 }
 
 .segment-1{fill:#ccc;}

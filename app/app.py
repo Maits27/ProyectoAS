@@ -415,6 +415,7 @@ def dashboards():
         return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
     else:
         response = dashboards_por_categoria(idproyecto) 
+        d= response.get('datos')
         response2 = get_presupuesto(idproyecto) 
         d2 = response2.get('datos')
         datos = {
@@ -422,7 +423,10 @@ def dashboards():
                 'error': '',
                 'idproyecto': idproyecto,
                 'presupuesto': d2['presupuesto'],
-                'datos': response.get('datos')
+                'datos': {
+                    'restante': int(d2['presupuesto']/d['presupuestoInicial'])*100,
+                    'categorias': d['categorias']
+                }
             }      
         return render_template('dashboards.html', datos=datos)
 
