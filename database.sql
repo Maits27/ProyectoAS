@@ -13,6 +13,7 @@ CREATE TABLE proyecto (
     nombre VARCHAR(255) UNIQUE,
     contrasena VARCHAR(255), 
     presupuesto INT, 
+    presupuestoInicial INT,
     main VARCHAR(255)
 );
 
@@ -29,7 +30,7 @@ CREATE TABLE proyectosUsuario (
 CREATE TABLE transaccion (
     id INT AUTO_INCREMENT PRIMARY KEY, 
     nombre VARCHAR(255),
-    gasto BOOLEAN,
+    gasto INT,
     valor FLOAT,
     IdUsuario CHAR(64),
     IdProyecto CHAR(64),

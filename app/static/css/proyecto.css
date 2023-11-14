@@ -103,6 +103,14 @@ button {
   text-decoration: none;
   font-size: 14px;
 }
+#msform .p_text{
+	text-align: start;
+}
+#msform .select-transaccion{
+	width: 100%;
+	margin: 10px 5px;
+}
+
 #msform .action-button:hover, #msform .action-button:focus {
 	box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
 }

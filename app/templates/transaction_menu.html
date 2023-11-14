@@ -1,24 +1,87 @@
-{% extends 'layout2.html' %}
+{% extends 'layout.html' %}
 
 {% block title %}Transaccion{% endblock %}
 
 {% block content %}
-      
 <form autocomplete="off" id="msform" method="POST" action="{{ url_for('transaction_menu') }}">
 
     <fieldset>
         <h2 class="fs-title">Añade transacción</h2>
         <input type="text" id="nombre" name="nombre" placeholder="Nombre de la transacción" required>
-        <div class="contenedor-botones">
-            <input type="radio" name="opcion" value="TRUE"> Añadir gasto
-            <input type="radio" name="opcion" value="FALSE"> Añadir saldo
+
+        <label class="p_text" for="opciones">Especifica si los elementos del siguiente apartado son:</label>
+        <div id="opciones" name="opciones" class="contenedor-botones">
+            <input type="radio" name="opcion" value="1"> Gastos
+            <input type="radio" name="opcion" value="0"> Ganancias
         </div>
+        
+        <h2 class="fs-subtitle">Productos</h2>
+
+        <div id="elementosDinamicos" name="elementosDinamicos">
+            <input class="nuevo_producto_valor" type="text" id="nombreproducto[]" name="nombreproducto[]" placeholder="Nombre del producto" required>
+            <input class="nuevo_producto_valor" type="number" id="cantidad[]" name="cantidad[]" placeholder="Cantidad" required>
+            <input class="nuevo_producto_valor" type="number" id="precio[]" name="precio[]" step="0.01" placeholder="Precio por unidad" required>
+            <label class="p_text" for="categoria[]">Especifica la categoria del producto (si no está entre las opciones marca "Otros"):</label>
+            <select class="select-transaccion" id="categoria[]" name="categoria[]" required>
+                <option value="Comida">Comida</option>
+                <option value="Vivienda">Vivienda</option>
+                <option value="Ropa">Ropa</option>
+                <option value="Actividades">Actividades</option>
+                <option value="Material">Material</option>
+                <option selected value="Otros">Otros</option>
+            </select>
+        </div>
+
+        <!-- Botones para añadir y quitar elementos -->
+        <button type="button" onclick="agregarCampo()">Agregar Elemento</button>
+        <button type="button" onclick="quitarCampo()">Quitar Elemento</button>
+
+        <br>
+
         <button>Crear</button>
         <p id="erroreak" class="error_message">
             <div class="error_message">{{ datos['error'] }}</div>
-        </p>   
+        </p>
+        <p>{{ datos['datos']['mensaje'] }}</p>   
     </fieldset>
 </form> 
+<script>
+    // Función para agregar un nuevo campo al formulario
+    function agregarCampo() {
+        var contenedor = document.getElementById("elementosDinamicos");
+        var nuevoCampo = document.createElement("div");
+
+        // Agregar campos al nuevo div
+        nuevoCampo.innerHTML = `
+            <hr>
+            <input class="nuevo_producto_valor" type="text" id="nombreproducto[]" name="nombreproducto[]" placeholder="Nombre del producto" required>
+            <input class="nuevo_producto_valor" type="number" id="cantidad[]" name="cantidad[]" placeholder="Cantidad" required>
+            <input class="nuevo_producto_valor" type="number" id="precio[]" name="precio[]" step="0.01" placeholder="Precio por unidad" required>
+            <select class="select-transaccion" id="miSeleccion[]" name="miSeleccion[]" required>
+                <option value="Comida">Comida</option>
+                <option value="Vivienda">Vivienda</option>
+                <option value="Ropa">Ropa</option>
+                <option value="Actividades">Actividades</option>
+                <option value="Material">Material</option>
+                <option selected value="Otros">Otros</option>
+            </select>
+        `;
+
+        contenedor.appendChild(nuevoCampo);
+        
+    }
+
+    // Función para quitar el último campo del formulario
+    function quitarCampo() {
+        var contenedor = document.getElementById("elementosDinamicos");
+        var elementos = contenedor.getElementsByTagName("div");
+
+        // Asegúrate de que haya al menos un elemento antes de intentar quitar
+        if (elementos.length > 0) {
+            contenedor.removeChild(elementos[elementos.length - 1]);
+        }
+    }
+</script>
 
 
 {% endblock %}

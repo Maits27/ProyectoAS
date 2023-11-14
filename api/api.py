@@ -190,7 +190,7 @@ def create_project():
             email=cursor.fetchone() 
 
             if email:
-                cursor.execute('INSERT INTO proyecto (id, nombre, contrasena, presupuesto, main) VALUES (%s, %s, %s, %s, %s)', (idproyecto, nombre, contrasena_hash, presupuesto, email['email'],))
+                cursor.execute('INSERT INTO proyecto (id, nombre, contrasena, presupuesto, presupuestoInicial, main) VALUES (%s, %s, %s, %s, %s, %s)', (idproyecto, nombre, contrasena_hash, presupuesto, presupuesto, email['email'],))
                 mysql.connection.commit()
 
                 hash = userid + idproyecto
@@ -272,7 +272,7 @@ def join_project():
 ### PROJECT MENU  ###
 #####################
 
-@app.route('/project_menu', methods=['POST'])
+@app.route('/project_menu', methods=['POST', 'GET'])
 def project_menu():
     # ... (mover la lógica de registro de usuario aquí)
     data = request.json
@@ -288,9 +288,11 @@ def project_menu():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT presupuesto FROM proyecto WHERE id = %s', (idproyecto,))
         presupuesto=cursor.fetchone()
-
-        resultado['correcto'] = True
-        resultado['datos'] = {'transactionId': presupuesto['presupuesto']}
+        if presupuesto:
+            resultado['correcto'] = True
+            resultado['datos'] = {'presupuesto': presupuesto['presupuesto']}
+        else:
+            resultado['error'] = 'No hay ese proyecto'
         return resultado
     except Exception as e:
     # Manejo de excepciones
@@ -312,6 +314,7 @@ def transaction_menu():
     idproyecto = data.get('idproyecto')
     nombre = data.get('nombre')
     opcion = data.get('opcion')
+    productos = data.get('productos')
 
     resultado = {
         'correcto': False,
@@ -325,8 +328,88 @@ def transaction_menu():
         transactionId = cursor.lastrowid
         mysql.connection.commit()
 
+        precioTotal = 0
+        for producto in productos:
+            precioTotal += producto['cantidad'] * producto['precio']
+            cursor.execute('INSERT INTO producto (nombre, categoria, cantidad, precioUnidad, IdTransaccion) VALUES (%s, %s, %s, %s, %s)', (producto['nombreproducto'], producto['categoria'], producto['cantidad'], producto['precio'],transactionId,))
+            mysql.connection.commit()
+        
+        cursor.execute('UPDATE transaccion SET valor = %s WHERE id = %s', (precioTotal, transactionId))
+        mysql.connection.commit()
+
+        cursor.execute('SELECT presupuesto FROM proyecto WHERE id = %s', (idproyecto,))
+        presupuesto = cursor.fetchone()['presupuesto']
+
+        # Actualizar el presupuesto del proyecto
+        if opcion=='1':
+            presupuesto -= precioTotal
+        else:
+            presupuesto += precioTotal
+
+        cursor.execute('UPDATE proyecto SET presupuesto = %s WHERE id = %s', (presupuesto, idproyecto))
+        mysql.connection.commit()
+
         resultado['correcto'] = True
         resultado['datos'] = {'transactionId': transactionId}
+        return resultado
+    except Exception as e:
+    # Manejo de excepciones
+        print(f"Error en el registro de usuario: {e}")
+        resultado['error'] = str(e)
+        return resultado
+    finally:
+        cursor.close()
+
+
+#####################
+###  DASHBOARDS   ###
+#####################
+
+@app.route('/dashboards', methods=['POST', 'GET'])
+def dashboards():
+    data = request.json
+    idproyecto = data.get('idproyecto')
+
+    resultado = {
+        'correcto': False,
+        'error': '',
+        'datos': None
+    }
+
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT presupuestoInicial FROM proyecto WHERE id = %s', (idproyecto,))
+        presupuestoInicial = cursor.fetchone()['presupuestoInicial']
+        resultado['datos'] = {
+            'presupuestoInicial': presupuestoInicial
+        }
+
+        cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Otros' and transaccion.IdProyecto = %s", (idproyecto,))
+        otros = cursor.fetchone()['total']
+        cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Comida' and transaccion.IdProyecto = %s", (idproyecto,))
+        comida = cursor.fetchone()['total']
+        cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Vivienda' and transaccion.IdProyecto = %s", (idproyecto,))
+        vivienda = cursor.fetchone()['total']
+        cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Ropa' and transaccion.IdProyecto = %s", (idproyecto,))
+        ropa = cursor.fetchone()['total']
+        cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Actividades' and transaccion.IdProyecto = %s", (idproyecto,))
+        actividades = cursor.fetchone()['total']
+        cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Material' and transaccion.IdProyecto = %s", (idproyecto,))
+        material = cursor.fetchone()['total']
+
+
+        resultado['correcto'] = True
+        resultado['datos'] = {
+            'presupuestoInicial': presupuestoInicial,
+            'categorias':{
+                'Otros': otros,
+                'Comida': comida,
+                'Vivienda': vivienda,
+                'Ropa': ropa,
+                'Actividades': actividades,
+                'Material': material
+            }
+        }
         return resultado
     except Exception as e:
     # Manejo de excepciones

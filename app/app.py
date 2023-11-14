@@ -5,12 +5,23 @@ app = Flask(__name__)
 
 app.secret_key = '123456789'
 
+def get_presupuesto(idproyecto):
+    db_url = "http://flask-api:5001/project_menu"  
+    payload = {'idproyecto': idproyecto}
+    response = requests.get(db_url, json=payload)
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        print(f"Error en la solicitud. Código de estado: {response.status_code}")
+        return None
+
 #####################
 ###    LOGOUT     ###
 #####################
 @app.route('/logout')
 def logout():
-
+    print('!!!!!!!!!!!!!!!!!!!!LOGOUT!!!!!!!!!!!!!!!!!!!!')
     session.pop('username', None)
     session.pop('project', None)
     session.pop('transaction', None)
@@ -241,35 +252,36 @@ def acceder_proyecto(userid, idproyecto, contra):
 @app.route('/project_menu', methods=['POST', 'GET'])
 def project_menu():
     id=session['ID_USER']
-    
-    if request.form["idproyecto"] is not None:
-        session['project'] = request.form["idproyecto"]
+    if request.method == 'POST':
+        if request.form["idproyecto"] is not None:
+            session['project'] = request.form["idproyecto"]
     idproyecto=session['project']
 
     if id is None:
         return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
     else:
-        response = project_menu_datos(idproyecto)  
+        response = get_presupuesto(idproyecto)  
+        d=response.get('datos')
         datos = {
                 'user': session['username'],
                 'error': '',
                 'idproyecto': idproyecto,
-                'presupuesto': response.get('datos')['presupuesto'],
-                'datos': None
+                'presupuesto': d['presupuesto'],
+                'datos': d
             }      
         return render_template('project_menu.html', datos=datos)
 
     
-def project_menu_datos(idproyecto):
-    db_url = "http://flask-api:5001/project_menu"  
-    payload = {'idproyecto': idproyecto}
-    response = requests.get(db_url, json=payload)
-    if response.status_code == 200:
-        data = response.json()
-        return data
-    else:
-        print(f"Error en la solicitud. Código de estado: {response.status_code}")
-        return None
+# def project_menu_datos(idproyecto):
+#     db_url = "http://flask-api:5001/project_menu"  
+#     payload = {'idproyecto': idproyecto}
+#     response = requests.get(db_url, json=payload)
+#     if response.status_code == 200:
+#         data = response.json()
+#         return data
+#     else:
+#         print(f"Error en la solicitud. Código de estado: {response.status_code}")
+#         return None
 
 #####################
 ###  TRANSACTION  ###
@@ -283,7 +295,7 @@ def transaction_menu():
                 'user': session['username'],
                 'error': '',
                 'transactionId': '', 
-                'idproyecto': '',
+                'idproyecto': idproyecto,
                 'presupuesto': None,
                 'datos': None
             }      
@@ -293,27 +305,42 @@ def transaction_menu():
     else:
         if request.method == 'POST':
             nombre = request.form["nombre"]
-            opcion = True
-            if request.form["opcion"] == 'FALSE':
-                opcion = False
-            response = anadir_transaccion(id, idproyecto, nombre, opcion)
-            response2 = project_menu_datos(idproyecto)
-            if response.get('correcto') and response2.get('correcto'):
+
+            opcion = request.form["opcion"]
+
+            productos = []
+            for producto in request.form.getlist('elementosDinamicos[]'):
+                p = {
+                "nombreproducto": producto["nombreproducto"],
+                "cantidad": producto["cantidad"],
+                "precio": producto["precio"],
+                "categoria": producto["categoria"]
+                }
+                productos.append(p)
+
+            response = anadir_transaccion(id, idproyecto, nombre, opcion, productos)
+            
+            if response.get('correcto'):
                 d = response.get('datos')
                 datos['error'] = response.get('error')
                 datos['transactionId'] = d['transactionId']
                 datos['idproyecto'] = idproyecto
-                datos['presupuesto'] = response2.get('datos')['presupuesto'] #TODO
-                return redirect(url_for('add_product', datos=datos))
+                datos['datos']={'mensaje':'Se ha añadido correctamente la transacción.'}
+                return redirect(url_for('transaction_menu', datos=datos))
             else:
                 datos['error'] = response.get('error')
+
+
+        response = get_presupuesto(idproyecto)
+        d = response.get('datos')
+        datos['presupuesto'] = d['presupuesto']
         
         return render_template('transaction_menu.html', datos=datos)
 
     
-def anadir_transaccion(userid, idproyecto, nombre, opcion):
-    db_url = "http://flask-api:5001/create_project"  
-    payload = {'userid': userid, 'idproyecto': idproyecto, 'nombre': nombre, 'opcion': opcion}
+def anadir_transaccion(userid, idproyecto, nombre, opcion, productos):
+    db_url = "http://flask-api:5001/transaction_menu"  
+    payload = {'userid': userid, 'idproyecto': idproyecto, 'nombre': nombre, 'opcion': opcion, 'productos': productos}
     response = requests.post(db_url, json=payload)
     if response.status_code == 200:
         data = response.json()
@@ -322,8 +349,86 @@ def anadir_transaccion(userid, idproyecto, nombre, opcion):
         print(f"Error en la solicitud. Código de estado: {response.status_code}")
         return None
 
-def project_menu_datos(idproyecto):
-    db_url = "http://flask-api:5001/project_menu"  
+
+
+# #####################
+# ###  ADD PRODUCT  ###
+# #####################
+
+# @app.route('/add_product', methods=['POST', 'GET'])
+# def add_product():
+#     id=session['ID_USER']
+#     idproyecto=session['project']
+#     datos = {
+#                 'user': session['username'],
+#                 'error': '',
+#                 'transactionId': '', 
+#                 'idproyecto': '',
+#                 'datos': None
+#             }      
+
+#     if id is None:
+#         return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
+#     else:
+#         if request.method == 'POST':
+#             nombre = request.form["nombre"]
+#             opcion = True
+#             if request.form["opcion"] == 'FALSE':
+#                 opcion = False
+#             response = anadir_producto_a_transaccion(id, idproyecto, nombre, opcion)
+            
+#             if response.get('correcto'):
+#                 d = response.get('datos')
+#                 datos['error'] = response.get('error')
+#                 datos['transactionId'] = d['transactionId']
+#                 datos['idproyecto'] = idproyecto
+#                 return redirect(url_for('add_product', datos=datos))
+#             else:
+#                 datos['error'] = response.get('error')
+        
+#     return render_template('transaction_menu.html', datos=datos)
+
+    
+# def anadir_producto_a_transaccion(userid, idproyecto, nombre, opcion):
+#     db_url = "http://flask-api:5001/create_project"  
+#     payload = {'userid': userid, 'idproyecto': idproyecto, 'nombre': nombre, 'opcion': opcion}
+#     response = requests.post(db_url, json=payload)
+#     if response.status_code == 200:
+#         data = response.json()
+#         return data
+#     else:
+#         print(f"Error en la solicitud. Código de estado: {response.status_code}")
+#         return None
+
+
+#####################
+###  DASHBOARDS  ###
+#####################
+
+
+@app.route('/dashboards', methods=['POST', 'GET'])
+def dashboards():
+    id=session['ID_USER']
+    idproyecto=session['project']
+
+    if id is None:
+        return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
+    else:
+        response = dashboards_por_categoria(idproyecto) 
+        response2 = get_presupuesto(idproyecto) 
+        d2 = response2.get('datos')
+        datos = {
+                'user': session['username'],
+                'error': '',
+                'idproyecto': idproyecto,
+                'presupuesto': d2['presupuesto'],
+                'datos': response.get('datos')
+            }      
+        return render_template('dashboards.html', datos=datos)
+
+    
+def dashboards_por_categoria(idproyecto):
+    db_url = "http://flask-api:5001/dashboards"  
     payload = {'idproyecto': idproyecto}
     response = requests.get(db_url, json=payload)
     if response.status_code == 200:
@@ -331,57 +436,11 @@ def project_menu_datos(idproyecto):
         return data
     else:
         print(f"Error en la solicitud. Código de estado: {response.status_code}")
-        return None
-
-#####################
-###  TRANSACTION  ###
-#####################
-
-@app.route('/transaction_menu', methods=['POST', 'GET'])
-def transaction_menu():
-    id=session['ID_USER']
-    idproyecto=session['project']
-    datos = {
-                'user': session['username'],
-                'error': '',
-                'transactionId': '', 
-                'idproyecto': '',
-                'datos': None
-            }      
-
-    if id is None:
-        return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
-    else:
-        if request.method == 'POST':
-            nombre = request.form["nombre"]
-            opcion = True
-            if request.form["opcion"] == 'FALSE':
-                opcion = False
-            response = anadir_transaccion(id, idproyecto, nombre, opcion)
-            
-            if response.get('correcto'):
-                d = response.get('datos')
-                datos['error'] = response.get('error')
-                datos['transactionId'] = d['transactionId']
-                datos['idproyecto'] = idproyecto
-                return redirect(url_for('add_product', datos=datos))
-            else:
-                datos['error'] = response.get('error')
-        
-    return render_template('transaction_menu.html', datos=datos)
-
-    
-def anadir_transaccion(userid, idproyecto, nombre, opcion):
-    db_url = "http://flask-api:5001/create_project"  
-    payload = {'userid': userid, 'idproyecto': idproyecto, 'nombre': nombre, 'opcion': opcion}
-    response = requests.post(db_url, json=payload)
-    if response.status_code == 200:
-        data = response.json()
-        return data
-    else:
-        print(f"Error en la solicitud. Código de estado: {response.status_code}")
-        return None
-
+        return {
+        'correcto': False,
+        'error': '',
+        'datos': response.status_code
+    }
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

@@ -9,14 +9,21 @@
         </header>
         <br>
         <!-- multistep form -->
-    <form autocomplete="off" id="msform" method="POST" action="{{ url_for('create_project') }}">
+    <form autocomplete="off" id="msform" method="POST" action="{{ url_for('add_product') }}">
 
         <fieldset>
             <h2 class="fs-title">Añade productos a la transacción:</h2>
-            <input type="text" id="nombre" name="nombre" placeholder="Nombre del proyecto" required>
-            <input type="number" id="presupuesto" name="presupuesto" placeholder="Presupuesto (no podrás cambiarlo más adelante)" required>
-            <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña para el proyecto" required>
-            <input type="password" id="confirmacion" name="confirmacion" placeholder="Repite la contraseña..." required>
+            <input type="text" id="nombreproducto[]" name="nombreproducto[]" placeholder="Nombre del producto" required>
+            <select id="miSeleccion[]" name="miSeleccion[]" required>
+                <option value="Comida">Comida</option>
+                <option value="Vivienda">Vivienda</option>
+                <option value="Ropa">Ropa</option>
+                <option value="Actividades">Actividades</option>
+                <option value="Material">Material</option>
+                <option selected value="Otros">Otros</option>
+            </select>
+            <input type="number" id="cantidad[]" name="cantidad[]" placeholder="Cantidad" required>
+            <input type="number" id="precio[]" name="precio[]" step="0.01" placeholder="Precio por unidad" required>
             <button>Crear</button>
             <p id="erroreak" class="error_message">
                 <div class="error_message">{{ datos['error'] }}</div>

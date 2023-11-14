@@ -17,7 +17,8 @@ body {
     -moz-osx-font-smoothing: grayscale;
     -webkit-background-size: cover;
     -moz-background-size: cover;
-    -o-background-size: cover;      
+    -o-background-size: cover;   
+    overflow: scroll;   
 }
 
 /* Orrialdearen botoiak */
