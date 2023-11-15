@@ -24,6 +24,8 @@ services:
     environment:
       - MYSQL_HOST=mysql
 
+      
+
 
   mysql:
     image: mysql:latest

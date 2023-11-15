@@ -218,11 +218,11 @@ def join_project():
             if response.get('correcto'):
                 d = response.get('datos')
                 datos['error'] = response.get('error')
-                session['project'] = d
+                session['project'] = d['idproyecto'] 
 
                 # TODO IGUAL DEVOLVER EL ID DEL PROYECTO CUANDO REDIRIJAMOS AL MENU DEL PROYECTO
                 
-                datos['idproyecto'] = d
+                datos['idproyecto'] = d['idproyecto'] 
                 return redirect(url_for('project_menu', datos=datos))
             else:
                 datos['error'] = response.get('error')

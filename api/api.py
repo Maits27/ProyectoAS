@@ -247,7 +247,7 @@ def join_project():
         if not proyecto:
             resultado['error'] = 'El ID o la contraseña del proyecto no son correctos.'
         else:
-            hash = userid + id
+            hash = userid + idproyecto
             hash = hashlib.sha256(hash.encode())
             id_p_u = hash.hexdigest()
 
@@ -257,7 +257,6 @@ def join_project():
             resultado['correcto'] = True
             resultado['error'] = 'NO HAY ERROR'
             resultado['datos'] = {'idproyecto': idproyecto}
-        resultado['datos'] = 'proyecto'
         return resultado
     except Exception as e:
     # Manejo de excepciones
