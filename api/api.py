@@ -256,7 +256,7 @@ def join_project():
 
             resultado['correcto'] = True
             resultado['error'] = 'NO HAY ERROR'
-            resultado['datos'] = {'idproyecto': idproyecto}
+            resultado['datos'] = {'idproyecto': idproyecto, 'nombreProyecto':proyecto['nombre'], 'email': proyecto['main']}
         return resultado
     except Exception as e:
     # Manejo de excepciones
@@ -534,4 +534,4 @@ def delete_transaction():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001)
+    app.run(host='0.0.0.0', port=5001, debug=True)

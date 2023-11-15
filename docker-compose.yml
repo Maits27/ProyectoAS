@@ -1,5 +1,18 @@
 version: "3.9"
 services:
+
+  mensajeria:
+    build: ./build/mensajeria/
+    volumes:
+      - ./mensajeria:/mensajeria
+    ports:
+      - "5002:5000" 
+    depends_on:
+      - flask-app
+    links:
+      - flask-app
+
+      
   flask-app:
     build: ./build/app/
     volumes:
@@ -23,17 +36,6 @@ services:
       - mysql
     environment:
       - MYSQL_HOST=mysql
-
-  mensajeria:
-    build: ./build/mensajeria/
-    volumes:
-      - ./mensajeria:/mensajeria
-    ports:
-      - "5002:5000" 
-    depends_on:
-      - flask-api
-    links:
-      - flask-api
 
 
   mysql:
