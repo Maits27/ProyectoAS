@@ -1,4 +1,4 @@
-from flask import Flask, render_template, json, request, request, redirect, session, url_for
+from flask import Flask, render_template, json, request, redirect, session, url_for
 import requests
 
 app = Flask(__name__)
@@ -370,68 +370,6 @@ def anadir_transaccion(userid, idproyecto, nombre, opcion, productos):
         print(f"Error en la solicitud. Código de estado: {response.status_code}")
         return None
 
-    
-# def anadir_transaccion(userid, idproyecto, nombre, opcion, productos):
-#     db_url = "http://flask-api:5001/transaction_menu"  
-#     payload = {'userid': userid, 'idproyecto': idproyecto, 'nombre': nombre, 'opcion': opcion, 'productos': productos}
-#     response = requests.post(db_url, json=payload)
-#     if response.status_code == 200:
-#         data = response.json()
-#         return data
-#     else:
-#         print(f"Error en la solicitud. Código de estado: {response.status_code}")
-#         return None
-
-
-
-# #####################
-# ###  ADD PRODUCT  ###
-# #####################
-
-# @app.route('/add_product', methods=['POST', 'GET'])
-# def add_product():
-#     id=session['ID_USER']
-#     idproyecto=session['project']
-#     datos = {
-#                 'user': session['username'],
-#                 'error': '',
-#                 'transactionId': '', 
-#                 'idproyecto': '',
-#                 'datos': None
-#             }      
-
-#     if id is None:
-#         return redirect(url_for('/', error='Vuelve a iniciar sesión.'))
-#     else:
-#         if request.method == 'POST':
-#             nombre = request.form["nombre"]
-#             opcion = True
-#             if request.form["opcion"] == 'FALSE':
-#                 opcion = False
-#             response = anadir_producto_a_transaccion(id, idproyecto, nombre, opcion)
-            
-#             if response.get('correcto'):
-#                 d = response.get('datos')
-#                 datos['error'] = response.get('error')
-#                 datos['transactionId'] = d['transactionId']
-#                 datos['idproyecto'] = idproyecto
-#                 return redirect(url_for('add_product', datos=datos))
-#             else:
-#                 datos['error'] = response.get('error')
-        
-#     return render_template('transaction_menu.html', datos=datos)
-
-    
-# def anadir_producto_a_transaccion(userid, idproyecto, nombre, opcion):
-#     db_url = "http://flask-api:5001/create_project"  
-#     payload = {'userid': userid, 'idproyecto': idproyecto, 'nombre': nombre, 'opcion': opcion}
-#     response = requests.post(db_url, json=payload)
-#     if response.status_code == 200:
-#         data = response.json()
-#         return data
-#     else:
-#         print(f"Error en la solicitud. Código de estado: {response.status_code}")
-#         return None
 
 
 #####################

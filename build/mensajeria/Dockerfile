@@ -2,7 +2,7 @@
 FROM python:3.9
 
 # Establece el directorio de trabajo en /app
-WORKDIR /api
+WORKDIR /mensajeria
 
 # Copia el archivo de requisitos e instala las dependencias
 COPY requirements.txt .
@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 5000
 
 # Ejecuta la aplicación Flask
-CMD ["python", "api.py"]
+CMD ["python", "mensajeria.py"]

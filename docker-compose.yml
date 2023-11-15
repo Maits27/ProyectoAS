@@ -24,7 +24,16 @@ services:
     environment:
       - MYSQL_HOST=mysql
 
-      
+  mensajeria:
+    build: ./build/mensajeria/
+    volumes:
+      - ./mensajeria:/mensajeria
+    ports:
+      - "5002:5000" 
+    depends_on:
+      - flask-api
+    links:
+      - flask-api
 
 
   mysql:
