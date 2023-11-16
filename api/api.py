@@ -391,54 +391,35 @@ def dashboards():
         cursor.execute('SELECT presupuesto FROM proyecto WHERE id = %s', (idproyecto,))
         presupuesto = cursor.fetchone()['presupuesto']
 
-        cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Otros' and transaccion.IdProyecto = %s", (idproyecto,))
-        otros = cursor.fetchone()['total']
-        if otros is None:
-            otros = 0.0
-        cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Comida' and transaccion.IdProyecto = %s", (idproyecto,))
-        comida = cursor.fetchone()['total']
-        if comida is None:
-            comida = 0.0
-        cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Vivienda' and transaccion.IdProyecto = %s", (idproyecto,))
-        vivienda = cursor.fetchone()['total']
-        if vivienda is None:
-            vivienda = 0.0
-        cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Ropa' and transaccion.IdProyecto = %s", (idproyecto,))
-        ropa = cursor.fetchone()['total']
-        if ropa is None:
-            ropa = 0.0
-        cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Actividades' and transaccion.IdProyecto = %s", (idproyecto,))
-        actividades = cursor.fetchone()['total']
-        if actividades is None:
-            actividades = 0.0
-        cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = 'Material' and transaccion.IdProyecto = %s", (idproyecto,))
-        material = cursor.fetchone()['total']
-        if material is None:
-            material = 0.0
+        categorias = ['Otros', 'Comida', 'Vivienda', 'Ropa', 'Actividades', 'Material']
+        porcentajes = {}
 
+        for categoria in categorias:
+            cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = %s and transaccion.IdProyecto = %s and transaccion.gasto = 1", (categoria, idproyecto,))
+            total_categoria = cursor.fetchone()['total']
+            if total_categoria is None:
+                total_categoria = 0.0
+
+            porcentaje_categoria = int((total_categoria / (presupuestoInicial - presupuesto)) * 100)
+            porcentajes[categoria] = total_categoria
 
         resultado['correcto'] = True
         resultado['datos'] = {
             'presupuestoInicial': presupuestoInicial,
-            'utilizado': presupuestoInicial-presupuesto,
+            'utilizado': presupuestoInicial - presupuesto,
             'restante': presupuesto,
-            'categorias':{
-                'Otros': int(otros/presupuestoInicial)*100,
-                'Comida': int(comida/presupuestoInicial)*100,
-                'Vivienda': int(vivienda/presupuestoInicial)*100,
-                'Ropa': int(ropa/presupuestoInicial)*100,
-                'Actividades': int(actividades/presupuestoInicial)*100,
-                'Material': int(material/presupuestoInicial)*100
-            }
+            'categorias': porcentajes,
+            'porcentaje_total': int((presupuestoInicial - presupuesto) / presupuestoInicial * 100)
         }
         return resultado
     except Exception as e:
-    # Manejo de excepciones
+        # Manejo de excepciones
         print(f"Error en el registro de usuario: {e}")
         resultado['error'] = str(e)
         return resultado
     finally:
         cursor.close()
+
 
 
 ########################
