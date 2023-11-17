@@ -457,6 +457,7 @@ def dashboards_por_categoria(idproyecto):
 def list_transaction():
     id=session['ID_USER']
     idproyecto=session['project']
+    
 
     if id is None:
         return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
@@ -495,6 +496,7 @@ def lista_de_transacciones(idproyecto):
 def delete_transaction(idTransaccion):
     borrar_transaccion(idTransaccion) 
     get_presupuesto(session['project'])
+
     return redirect(url_for('list_transaction'))
 
     
@@ -502,6 +504,7 @@ def borrar_transaccion(idTransaccion):
     db_url = "http://flask-api:5001/delete_transaction"  
     payload = {'idTransaccion': idTransaccion}
     requests.post(db_url, json=payload)
+
     
 
 

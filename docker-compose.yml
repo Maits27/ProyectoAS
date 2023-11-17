@@ -6,7 +6,7 @@ services:
     volumes:
       - ./mensajeria:/mensajeria
     ports:
-      - "5002:5000" 
+      - "5002:5000"
     depends_on:
       - flask-app
     links:
@@ -25,28 +25,28 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
 
-
   flask-app:
     build: ./build/app/
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.app.rule=Host(`localhost`)" 
+      - "traefik.http.routers.app.rule=Host(`localhost`)"
       - "traefik.http.services.app.loadbalancer.server.port=5000"
     volumes:
       - ./app:/app
     ports:
-      - "5000:5000" 
+      - "5000:5000"
     depends_on:
       - flask-api
     links:
       - flask-api
+
 
   flask-api:
     build: ./build/api/
     volumes:
       - ./api:/api
     ports:
-      - "5001:5000" 
+      - "5001:5000"
     depends_on:
       - mysql
     links:
@@ -58,14 +58,22 @@ services:
   mysql:
     image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: "test"
+      MYSQL_ROOT_PASSWORD: "VoQvmfovsy0hb0CcN5SI"
       MYSQL_DATABASE: "database"
+      MYSQL_USER: maitane
+      MYSQL_PASSWORD: "123"
     ports:
       - "3306:3306"
     volumes:
       - ./database.sql:/docker-entrypoint-initdb.d/database.sql
       - datos_mysql:/var/lib/mysql
-      
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pVoQvmfovsy0hb0CcN5SI"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    
+
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -74,10 +82,9 @@ services:
       PMA_HOST: mysql
       PMA_ARBITRARY: 1
     ports:
-      - "8085:80" # Mapea el puerto 8080 para phpMyAdmin
+      - "8085:80"
     depends_on:
       - mysql
-
 
 volumes:
   datos_mysql:

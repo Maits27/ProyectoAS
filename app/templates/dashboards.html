@@ -4,7 +4,6 @@
 
 {% block content %}
 
-{{datos}}
 <h2>Total de presupuesto utilizado:</h2>
 <div class="contenedor-donuts">
   <div class="svg-item">
@@ -27,7 +26,7 @@
 
   <br>
 
-<h2>Presupuesto por categorias:</h2>
+<h2>Porcentaje del gasto destinado a cada categoria:</h2>
   {% for chunk in datos['datos']['categorias'].items()|batch(2) %}
   <div class="contenedor-donuts">
     {% for categoria, valor in chunk %}

@@ -7,7 +7,7 @@ import hashlib
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'mysql'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'test'
+app.config['MYSQL_PASSWORD'] = 'VoQvmfovsy0hb0CcN5SI'
 app.config['MYSQL_DB'] = 'database'
 app.secret_key = '987654321'
 
@@ -395,13 +395,14 @@ def dashboards():
         porcentajes = {}
 
         for categoria in categorias:
-            cursor.execute("SELECT SUM(valor) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE categoria = %s and transaccion.IdProyecto = %s and transaccion.gasto = 1", (categoria, idproyecto,))
+            total_categoria = 0.0
+            cursor.execute("SELECT SUM(cantidad * precioUnidad) AS total FROM transaccion JOIN producto ON transaccion.id = producto.IdTransaccion WHERE producto.categoria = %s and transaccion.IdProyecto = %s and transaccion.gasto = 1", (categoria, idproyecto,))
             total_categoria = cursor.fetchone()['total']
             if total_categoria is None:
                 total_categoria = 0.0
 
-            porcentaje_categoria = int((total_categoria / (presupuestoInicial - presupuesto)) * 100)
-            porcentajes[categoria] = total_categoria
+            porcentaje_categoria = int((total_categoria / (presupuestoInicial)) * 100)
+            porcentajes[categoria] = porcentaje_categoria
 
         resultado['correcto'] = True
         resultado['datos'] = {
@@ -475,7 +476,7 @@ def delete_transaction():
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-        cursor.execute('SELECT gasto, valor, IdProyecto FROM transaccion WHERE IdTransaccion = %s', (idTransaccion,))
+        cursor.execute('SELECT gasto, valor, IdProyecto FROM transaccion WHERE id = %s', (idTransaccion,))
         transaccion = cursor.fetchone()
 
         if transaccion:

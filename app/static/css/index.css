@@ -95,6 +95,7 @@ body.loggedin {
   text-decoration: none; /* Elimina el subrayado */
   color: #fff;
 }
+
 .content {
   display: flex;
   justify-content: flex-start;
@@ -286,6 +287,11 @@ form {
   font-family: "Source Sans Pro", sans-serif;
   cursor: pointer;
 }
+.boton-borrado {
+  text-decoration: none; /* Elimina el subrayado */
+  color: #fff;
+}
+
 .button {
   width: 60%;
   height: 30px;
@@ -339,6 +345,10 @@ table th{
 }
 
 .laukia a:hover {
+  text-decoration: none; /* Elimina el subrayado */
+  color: #fff;
+}
+.laukia button:hover {
   text-decoration: none; /* Elimina el subrayado */
   color: #fff;
 }
