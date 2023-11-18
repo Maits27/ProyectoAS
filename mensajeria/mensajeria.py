@@ -4,6 +4,7 @@ import smtplib
 from email.message import EmailMessage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from t_gmail import EMAIL_T
 
 app = Flask(__name__)
 
@@ -45,10 +46,8 @@ def register():
     email.attach(MIMEText(mensaje, 'html'))
 
     try:
-        with open('token.txt', 'r', encoding='utf-8') as archivo:
-            contrasena = archivo.read()
         smtp = smtplib.SMTP_SSL("smtp.gmail.com")
-        smtp.login(remitente, contrasena)
+        smtp.login(remitente, EMAIL_T)
         smtp.sendmail(remitente, destinatario, email.as_string())
         smtp.quit()
         mensaje = "¡Correo enviado con éxito!"
@@ -94,10 +93,8 @@ def join():
     email.attach(MIMEText(mensaje, 'html'))
 
     try:
-        with open('token.txt', 'r', encoding='utf-8') as archivo:
-            contrasena = archivo.read()
         smtp = smtplib.SMTP_SSL("smtp.gmail.com")
-        smtp.login(remitente, contrasena)
+        smtp.login(remitente, EMAIL_T)
         smtp.sendmail(remitente, destinatario, email.as_string())
         smtp.quit()
         mensaje = "¡Correo enviado con éxito!"

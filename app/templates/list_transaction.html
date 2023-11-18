@@ -19,7 +19,7 @@
         <tr>
           <td>{{ transaccion['nombre'] }}</td>
           <td>{{ transaccion['valor'] }}</td> 
-          <td><button><a href="{{ url_for('delete_transaction', idTransaccion=transaccion['id']) }}"><img src="{{ url_for('static', filename='image/papelera.png') }}" width=30></a></button></td>
+          <td><button class="delete_button"><a href="{{ url_for('delete_transaction', idTransaccion=transaccion['id']) }}"><img src="{{ url_for('static', filename='image/papelera.png') }}" width=30></a></button></td>
         </tr>
       {% endfor %}
     {% endif %}		

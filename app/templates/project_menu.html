@@ -21,18 +21,20 @@
 				<p>ID del proyecto: {{ datos['idproyecto'] }}</p>
 				<h1><a href="{{ url_for('user_menu') }}"><i class="fas fa-home"></i> Menu de proyectos</a></h1>
 				<h1><a href="{{ url_for('project_menu') }}"><i class="fas fa-lightbulb"></i> Información de proyecto</a></h1>
-				<h1><a href="{{ url_for('list_transaction') }}"><i class="fas fa-circle"></i> Listado de transacciones </a></h1>
-				<h1><a href="{{ url_for('dashboards') }}"><i class="fas fa-circle"></i> Dashboards </a></h1>
+				<h1><a href="{{ url_for('dashboards') }}"><i class="fas fa-check-circle"></i> Dashboards </a></h1>
+				<h1><a href="{{ url_for('list_transaction') }}"><i class="fas fa-digital-tachograph"></i> Listado de transacciones </a></h1>
 				<h1><a href="{{ url_for('transaction_menu') }}"><i class="fas fa-euro-sign"></i> Nueva transacción</a></h1>
-				<h1><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a></h1>
+				<h1><a href="{{ url_for('logout') }}"><i class="fas fa-user-circle"></i>Logout</a></h1>
 			</div>
 			
 		</nav>
 		<div class="content-menu">
-      <h1 >ID del proyecto:</h1>
-      <h1 >{{ datos['idproyecto'] }}</h1>
-      <br>
-      <h2 >Presupuesto restante: {{ datos['presupuesto'] }}</h2>
+			<h1 class="mi-titulo-interno">BUDGET BUDDY <i class="fas fa-money-check-alt"></i></h1>
+			<br>
+			<h1 >ID del proyecto:</h1>
+			<h1 >{{ datos['idproyecto'] }}</h1>
+			<br>
+			<h2 >Presupuesto restante: {{ datos['presupuesto'] }}</h2>
 		</div>
 		
 	</body>

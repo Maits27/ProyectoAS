@@ -1,0 +1,5 @@
+USER_PASSWORD = 'VoQvmfovsy0hb0CcN5SI'
+MYSQL_USER = 'root'
+SERVICE_MYSQL = 'mysql'
+MYSQL_DATABASE = 'database'
+APP_SECRET_KEY = 'rtLYX24pXabBKMxB0Pxl'

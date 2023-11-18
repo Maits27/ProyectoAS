@@ -47,3 +47,36 @@ CREATE TABLE producto(
     IdTransaccion INT,
     FOREIGN KEY (IdTransaccion) REFERENCES transaccion(id)
 );
+
+
+-- Insertar usuario Prueba
+INSERT INTO usuarios (id, nombre, email, contrasena)
+VALUES ('bb6decf891b9679be1adb97d664227417eaa7602e8bb44a51d1074f93497801e', 'BudgetBuddy', 'budgetbuddy46@gmail.com', 'cf3e3244e8bbc624580fd069c3b4d8b3a84f4ed2e3e6b90c5feacaace04960b5');
+
+-- Insertar proyecto Proyecto
+INSERT INTO proyecto (id, nombre, contrasena, presupuesto, presupuestoInicial, main)
+VALUES ('#Proyecto0', 'Proyecto', 'edfbc8a6ca51648a09e95d95a2d62d021c9339658cfbc6b36ab8a2fd1b1703dd', 1114, 2000, 'budgetbuddy46@gmail.com');
+
+-- Insertar relación entre usuario Prueba y proyecto Proyecto
+INSERT INTO proyectosUsuario (id, IdUsuario, IdProyecto)
+VALUES ('79854ecbb40238c0edeaa78219b470bc3a9153c7ac386d12478dea476882e106', 'bb6decf891b9679be1adb97d664227417eaa7602e8bb44a51d1074f93497801e', '#Proyecto0');
+
+-- Insertar transaccion Transaccion
+INSERT INTO transaccion (id, nombre, gasto, valor, IdUsuario, IdProyecto)
+VALUES (1, 'Ganancia', 0, 1000, 'bb6decf891b9679be1adb97d664227417eaa7602e8bb44a51d1074f93497801e', '#Proyecto0'),
+(2, 'Compras hoy', 1, 40, 'bb6decf891b9679be1adb97d664227417eaa7602e8bb44a51d1074f93497801e', '#Proyecto0'),
+(3, 'Quedada', 1, 26, 'bb6decf891b9679be1adb97d664227417eaa7602e8bb44a51d1074f93497801e', '#Proyecto0'),
+(4, 'Facturas', 1, 70, 'bb6decf891b9679be1adb97d664227417eaa7602e8bb44a51d1074f93497801e', '#Proyecto0'),
+(5, 'Compra ordenador', 1, 700, 'bb6decf891b9679be1adb97d664227417eaa7602e8bb44a51d1074f93497801e', '#Proyecto0'),
+(6, 'Parque de atracciones', 1, 50, 'bb6decf891b9679be1adb97d664227417eaa7602e8bb44a51d1074f93497801e', '#Proyecto0');
+
+-- Insertar producto Producto
+INSERT INTO producto (id, nombre, categoria, cantidad, precioUnidad, IdTransaccion)
+VALUES (1, 'Donacion', 'Otros', 1, 1000, 1),
+(2, 'Fruta', 'Comida', 10, 2, 2),
+(3, 'Sartenes', 'Material', 2, 10, 2),
+(4, 'Desayuno', 'Actividades', 1, 5, 3),
+(5, 'Camisetas', 'Ropa', 3, 7, 3),
+(6, 'Luz', 'Vivienda', 1, 70, 4),
+(7, 'Ordenador', 'Otros', 1, 700, 5),
+(8, 'Entrada', 'Actividades', 1, 50, 6);

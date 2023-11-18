@@ -7,14 +7,6 @@
 
 /* Orrialdearen botoiak */
 
-.contenedor-botones {
-  display: flex; /* Utilizar flexbox para alinear elementos en línea */
-  width: 60%;
-}
-
-/* Estilo para cada botón */
-
-
 header{
   background-color: white;
   align-items: center;

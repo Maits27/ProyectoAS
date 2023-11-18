@@ -5,8 +5,6 @@ services:
     build: ./build/mensajeria/
     volumes:
       - ./mensajeria:/mensajeria
-    ports:
-      - "5002:5000"
     depends_on:
       - flask-app
     links:
@@ -33,8 +31,6 @@ services:
       - "traefik.http.services.app.loadbalancer.server.port=5000"
     volumes:
       - ./app:/app
-    ports:
-      - "5000:5000"
     depends_on:
       - flask-api
     links:
@@ -45,10 +41,9 @@ services:
     build: ./build/api/
     volumes:
       - ./api:/api
-    ports:
-      - "5001:5000"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     links:
       - mysql
     environment:
@@ -62,8 +57,6 @@ services:
       MYSQL_DATABASE: "database"
       MYSQL_USER: maitane
       MYSQL_PASSWORD: "123"
-    ports:
-      - "3306:3306"
     volumes:
       - ./database.sql:/docker-entrypoint-initdb.d/database.sql
       - datos_mysql:/var/lib/mysql
@@ -71,7 +64,7 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pVoQvmfovsy0hb0CcN5SI"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      retries: 20
     
 
 
@@ -84,7 +77,8 @@ services:
     ports:
       - "8085:80"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
 volumes:
   datos_mysql:

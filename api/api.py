@@ -1,15 +1,17 @@
+import math
 from flask import Flask, request
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import hashlib
+from config import SERVICE_MYSQL, USER_PASSWORD, MYSQL_DATABASE, MYSQL_USER, APP_SECRET_KEY
 
 
 app = Flask(__name__)
-app.config['MYSQL_HOST'] = 'mysql'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'VoQvmfovsy0hb0CcN5SI'
-app.config['MYSQL_DB'] = 'database'
-app.secret_key = '987654321'
+app.config['MYSQL_HOST'] = SERVICE_MYSQL
+app.config['MYSQL_USER'] = MYSQL_USER
+app.config['MYSQL_PASSWORD'] = USER_PASSWORD
+app.config['MYSQL_DB'] = MYSQL_DATABASE
+app.secret_key = APP_SECRET_KEY
 
 mysql = MySQL(app)
 
@@ -97,7 +99,7 @@ def login():
                 'nombre': user['nombre']
             }
         else:
-            resultado['error'] = 'No existe el usuario.'
+            resultado['error'] = 'No existe el usuario'
             
         return resultado
 
@@ -401,7 +403,7 @@ def dashboards():
             if total_categoria is None:
                 total_categoria = 0.0
 
-            porcentaje_categoria = int((total_categoria / (presupuestoInicial)) * 100)
+            porcentaje_categoria = math.ceil((total_categoria / presupuestoInicial) * 100)
             porcentajes[categoria] = porcentaje_categoria
 
         resultado['correcto'] = True
@@ -410,7 +412,7 @@ def dashboards():
             'utilizado': presupuestoInicial - presupuesto,
             'restante': presupuesto,
             'categorias': porcentajes,
-            'porcentaje_total': int((presupuestoInicial - presupuesto) / presupuestoInicial * 100)
+            'porcentaje_total': math.ceil((presupuestoInicial - presupuesto) / presupuestoInicial * 100)
         }
         return resultado
     except Exception as e:

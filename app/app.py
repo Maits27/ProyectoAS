@@ -1,9 +1,10 @@
 from flask import Flask, render_template, json, request, redirect, session, url_for
 import requests
+from config import APP_SECRET_KEY
 
 app = Flask(__name__)
 
-app.secret_key = '123456789'
+app.secret_key = APP_SECRET_KEY
 
 def get_presupuesto(idproyecto):
     db_url = "http://flask-api:5001/project_menu"  
@@ -37,28 +38,32 @@ def logout():
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
-    var_error = ''
+    var_error = request.args.get('error', '')
     if request.method == 'POST':
         nombre = request.form["nombre"]
         email = request.form["email"]
         contra = request.form["contrasena"]
+        confirmacion = request.form["confirmacion"]
+        if contra == confirmacion:
 
-        response = register_user(nombre, email, contra)
+            response = register_user(nombre, email, contra)
 
-        if response.get('correcto'):
-            datos = response.get('datos')
-            session['username'] = nombre
-            session['email'] = email
-            session['project'] = ''
-            session['transaction'] = ''
-            session['ID_USER'] = datos.get('id')
-            response = send_register_email(nombre, email)
             if response.get('correcto'):
-                return redirect(url_for('user_menu'))
+                datos = response.get('datos')
+                session['username'] = nombre
+                session['email'] = email
+                session['project'] = ''
+                session['transaction'] = ''
+                session['ID_USER'] = datos.get('id')
+                response = send_register_email(nombre, email)
+                if response.get('correcto'):
+                    return redirect(url_for('user_menu'))
+                else:
+                    var_error = response.get('mensaje')
             else:
-                var_error = response.get('mensaje')
+                var_error = response.get('error')
         else:
-            var_error = response.get('error')
+            var_error = f'No coinciden las contraseñas'
     
     return render_template('index.html', error=var_error)
 
@@ -129,12 +134,12 @@ def login_user(email, contra):
 
 @app.route('/user_menu', methods=['POST', 'GET'])
 def user_menu():
-    id=session['ID_USER']
-    proyecto_json = ''
 
-    if id is None:
+    if 'ID_USER' not in session or session['ID_USER'] is None:
         return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
     else:
+        id=session['ID_USER']
+        proyecto_json = ''
         response = user_menu_datos(id)
         proyecto_json = response.get('datos')
         
@@ -164,33 +169,37 @@ def user_menu_datos(id):
 
 @app.route('/create_project', methods=['POST', 'GET'])
 def create_project():
-    id=session['ID_USER']
-    datos = {
-                'user': session['username'],
-                'error': '',
-                'idproyecto': '',
-                'datos': None
-            }
 
-    if id is None:
+    if 'ID_USER' not in session or session['ID_USER'] is None:
         return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
     else:
+        id=session['ID_USER']
+        datos = {
+                    'user': session['username'],
+                    'error': '',
+                    'idproyecto': '',
+                    'datos': None
+                }
         if request.method == 'POST':
             nombre = request.form["nombre"]
             contra = request.form["contrasena"]
+            confirmacion = request.form["confirmacion"]
             presupuesto = request.form["presupuesto"]
             response = crear_proyecto(id, nombre, contra, presupuesto)
             
-            if response.get('correcto'):
-                d = response.get('datos')
-                datos['error'] = response.get('error')
+            if confirmacion==contra:
+                if response.get('correcto'):
+                    d = response.get('datos')
+                    datos['error'] = response.get('error')
 
-                # TODO IGUAL DEVOLVER EL ID DEL PROYECTO CUANDO REDIRIJAMOS AL MENU DEL PROYECTO
-                session['project'] = d['idproyecto']
-                datos['idproyecto'] = d['idproyecto']
-                return redirect(url_for('project_menu', datos=datos))
+                    # TODO IGUAL DEVOLVER EL ID DEL PROYECTO CUANDO REDIRIJAMOS AL MENU DEL PROYECTO
+                    session['project'] = d['idproyecto']
+                    datos['idproyecto'] = d['idproyecto']
+                    return redirect(url_for('project_menu', datos=datos))
+                else:
+                    datos['error'] = response.get('error')
             else:
-                datos['error'] = response.get('error')
+                datos['error'] = 'No coinciden las contraseñas'
         
     return render_template('create_project.html', datos=datos)
 
@@ -213,18 +222,18 @@ def crear_proyecto(id, nombre, contra, presupuesto):
 #####################
 
 @app.route('/join_project', methods=['POST', 'GET'])
-def join_project():
-    id=session['ID_USER']
-    datos = {
-                'user': session['username'],
-                'error': '',
-                'idproyecto': '',
-                'datos': None
-            }      
+def join_project():     
 
-    if id is None:
+    if 'ID_USER' not in session or session['ID_USER'] is None:
         return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
     else:
+        id=session['ID_USER']
+        datos = {
+                    'user': session['username'],
+                    'error': '',
+                    'idproyecto': '',
+                    'datos': None
+                } 
         if request.method == 'POST':
             idproyecto = request.form["idproyecto"]
             contra = request.form["contrasena"]
@@ -282,25 +291,26 @@ def send_join_email(email, newuser, proyecto):
 
 @app.route('/project_menu', methods=['POST', 'GET'])
 def project_menu():
-    id=session['ID_USER']
+    if 'ID_USER' not in session or session['ID_USER'] is None:
+        return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
+
     if request.method == 'POST':
         if request.form["idproyecto"] is not None:
             session['project'] = request.form["idproyecto"]
     idproyecto=session['project']
+    
+    response = get_presupuesto(idproyecto)  
+    d=response.get('datos')
+    datos = {
+            'user': session['username'],
+            'error': response.get('error'),
+            'idproyecto': idproyecto,
+            'presupuesto': d['presupuesto'],
+            'datos': {'presupuesto': d['presupuesto']}
+        }      
+    return render_template('project_menu.html', datos=datos)
 
-    if id is None:
-        return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
-    else:
-        response = get_presupuesto(idproyecto)  
-        d=response.get('datos')
-        datos = {
-                'user': session['username'],
-                'error': response.get('error'),
-                'idproyecto': idproyecto,
-                'presupuesto': d['presupuesto'],
-                'datos': {'presupuesto': d['presupuesto']}
-            }      
-        return render_template('project_menu.html', datos=datos)
+
 def get_datos_proyecto(idproyecto):
     db_url = "http://flask-api:5001/project_menu_data"  
     payload = {'idproyecto': idproyecto}
@@ -328,7 +338,9 @@ def get_datos_proyecto(idproyecto):
 #####################
 @app.route('/transaction_menu', methods=['POST', 'GET'])
 def transaction_menu():
-    id=session['ID_USER']
+    if 'ID_USER' not in session or session['ID_USER'] is None:
+        return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
+
     idproyecto=session['project']
     datos = {
                 'user': session['username'],
@@ -338,56 +350,54 @@ def transaction_menu():
                 'presupuesto': None,
                 'datos': None
             }      
-    if id is None:
-        return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
-    else:
-        if request.method == 'POST':
-            nombre = request.form["nombre"]
-            opcion = request.form["opcion"]
 
-            elementos_dinamicos = []
-            indice = 0
-            # Obtén los datos de los elementos dinámicos
-            for key in request.form.keys():
-                # Verificar si la clave es un elemento dinámico
-                if key.startswith("nombreproducto"):
-                    # Extraer el índice del nombre de la clave
-                    indice += 1
-                    
-                    # Obtener los valores del elemento dinámico
-            for i in range(indice):
-                nombre_producto = request.form[f'nombreproducto{i}']
-                cantidad = int(request.form[f'cantidad{i}'])
-                precio = float(request.form[f'precio{i}'])
-                categoria = request.form[f'categoria{i}']
+    if request.method == 'POST':
+        nombre = request.form["nombre"]
+        opcion = request.form["opcion"]
 
-                # Verificar si se encontró un elemento con ese índice
-                if nombre_producto is not None:
-                    elemento = {
-                        'nombreproducto': nombre_producto,
-                        'cantidad': cantidad,
-                        'precio': precio,
-                        'categoria': categoria,
-                    }
-                    elementos_dinamicos.append(elemento)
-            if len(elementos_dinamicos) >0:
-                response = anadir_transaccion(id, idproyecto, nombre, opcion, elementos_dinamicos)
-            
-                if response.get('correcto'):
-                    d = response.get('datos')
-                    datos['error'] = response.get('error')
-                    datos['transactionId'] = d['transactionId']
-                    datos['idproyecto'] = idproyecto
-                    datos['datos']={'mensaje':'Se ha añadido correctamente la transacción.'}
-                else:
-                    datos['error'] = response.get('error')
-                    datos['datos'] = 'todo mal'
+        elementos_dinamicos = []
+        indice = 0
+        # Obtén los datos de los elementos dinámicos
+        for key in request.form.keys():
+            # Verificar si la clave es un elemento dinámico
+            if key.startswith("nombreproducto"):
+                # Extraer el índice del nombre de la clave
+                indice += 1
+                
+                # Obtener los valores del elemento dinámico
+        for i in range(indice):
+            nombre_producto = request.form[f'nombreproducto{i}']
+            cantidad = int(request.form[f'cantidad{i}'])
+            precio = float(request.form[f'precio{i}'])
+            categoria = request.form[f'categoria{i}']
 
-        response = get_presupuesto(idproyecto)
-        d = response.get('datos')
-        datos['presupuesto'] = d['presupuesto']
+            # Verificar si se encontró un elemento con ese índice
+            if nombre_producto is not None:
+                elemento = {
+                    'nombreproducto': nombre_producto,
+                    'cantidad': cantidad,
+                    'precio': precio,
+                    'categoria': categoria,
+                }
+                elementos_dinamicos.append(elemento)
+        if len(elementos_dinamicos) >0:
+            response = anadir_transaccion(id, idproyecto, nombre, opcion, elementos_dinamicos)
         
-        return render_template('transaction_menu.html', datos=datos)
+            if response.get('correcto'):
+                d = response.get('datos')
+                datos['error'] = response.get('error')
+                datos['transactionId'] = d['transactionId']
+                datos['idproyecto'] = idproyecto
+                datos['datos']={'mensaje':'Se ha añadido correctamente la transacción.'}
+            else:
+                datos['error'] = response.get('error')
+                datos['datos'] = 'todo mal'
+
+    response = get_presupuesto(idproyecto)
+    d = response.get('datos')
+    datos['presupuesto'] = d['presupuesto']
+    
+    return render_template('transaction_menu.html', datos=datos)
 
     
 def anadir_transaccion(userid, idproyecto, nombre, opcion, productos):
@@ -410,24 +420,23 @@ def anadir_transaccion(userid, idproyecto, nombre, opcion, productos):
 
 @app.route('/dashboards', methods=['POST', 'GET'])
 def dashboards():
-    id=session['ID_USER']
+    if 'ID_USER' not in session or session['ID_USER'] is None:
+        return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
+
     idproyecto=session['project']
 
-    if id is None:
-        return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
-    else:
-        #Para actualizar
-        get_presupuesto(idproyecto) 
-        response = dashboards_por_categoria(idproyecto) 
-        d= response.get('datos')
-        datos = {
-                'user': session['username'],
-                'error': '',
-                'idproyecto': idproyecto,
-                'presupuesto': d['restante'],
-                'datos': d
-            }      
-        return render_template('dashboards.html', datos=datos)
+    #Para actualizar
+    get_presupuesto(idproyecto) 
+    response = dashboards_por_categoria(idproyecto) 
+    d= response.get('datos')
+    datos = {
+            'user': session['username'],
+            'error': '',
+            'idproyecto': idproyecto,
+            'presupuesto': d['restante'],
+            'datos': d
+        }      
+    return render_template('dashboards.html', datos=datos)
 
     
 def dashboards_por_categoria(idproyecto):
@@ -455,45 +464,47 @@ def dashboards_por_categoria(idproyecto):
 
 @app.route('/list_transaction', methods=['POST', 'GET'])
 def list_transaction():
-    id=session['ID_USER']
-    idproyecto=session['project']
-    
-
-    if id is None:
+    if 'ID_USER' not in session or session['ID_USER'] is None:
         return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
-    else:
-        #Para actualizar
-        response2 =get_presupuesto(idproyecto) 
-        response = lista_de_transacciones(idproyecto) 
-        d= response.get('datos')
-        datos = {
-                'user': session['username'],
-                'error': '',
-                'idproyecto': idproyecto,
-                'presupuesto': response2.get('datos')['presupuesto'],
-                'datos': d
-            }      
-        return render_template('list_transaction.html', datos=datos)
+
+    idproyecto=session['project']
+
+    #Para actualizar
+    response2 =get_presupuesto(idproyecto) 
+    response = lista_de_transacciones(idproyecto) 
+    d= response.get('datos')
+    datos = {
+            'user': session['username'],
+            'error': '',
+            'idproyecto': idproyecto,
+            'presupuesto': response2.get('datos')['presupuesto'],
+            'datos': d
+        }      
+    return render_template('list_transaction.html', datos=datos)
 
     
 def lista_de_transacciones(idproyecto):
     db_url = "http://flask-api:5001/list_transaction"  
     payload = {'idproyecto': idproyecto}
     response = requests.get(db_url, json=payload)
+
     if response.status_code == 200:
         data = response.json()
         return data
     else:
         print(f"Error en la solicitud. Código de estado: {response.status_code}")
         return {
-        'correcto': False,
-        'error': '',
-        'datos': response.status_code
-    }
+                    'correcto': False,
+                    'error': '',
+                    'datos': response.status_code
+                }
 
 
 @app.route('/delete_transaction/<string:idTransaccion>', methods=['POST', 'GET'])
 def delete_transaction(idTransaccion):
+    if 'ID_USER' not in session or session['ID_USER'] is None:
+        return redirect(url_for('register', error='Vuelve a iniciar sesión.'))
+
     borrar_transaccion(idTransaccion) 
     get_presupuesto(session['project'])
 

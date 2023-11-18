@@ -3,43 +3,40 @@
     <head>
         <title>Log-in</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
     </head>
     <body>
       <header>
         <br>
         <br>
-        <br>
-        <!--CAMBIA EL INDEX QUE ESTO ESTA MAL HECHO-->
-        <br>
-        <br>
-        <br>
+        <h1 class="mi-titulo">BUDGET BUDDY <i class="fas fa-money-check-alt"></i></h1>
         <br>
       </header>
       <div class="container">
         <div class="message signup">
-        <div class="form--heading">LOGIN </div>
+        <div class="form--heading"><p class="heading">LOGIN</p></div>
           <form autocomplete="off" id=formulario1 method="POST" action="{{ url_for('login') }}">
-            <input type="email" id="email2" name="email2" placeholder="Email">
-            <!--input type="text" id="nombre2" name="nombre2" placeholder="Nombre"-->
-            <input type="password" id="contrasena2" name="contrasena2" placeholder="Contraseña">
+            <input type="email" id="email2" name="email2" placeholder="Email" required>
+            <input type="password" id="contrasena2" name="contrasena2" placeholder="Contraseña" required>
             <button class="button">Login</button>
-            <p id="erroreak" class="error_message">
-              <div class="error_message">{{ error1 }}</div>
-            </p>
+            <p id="erroreak" class="error_message">{{ error1 }}</p>
+            <br>
+            <br>
+            <br>
           </form>
         </div>
         <div class="form form--signup">
-          <div class="form--heading">REGISTRO</div>
+          <div class="form--heading"><p class="heading">REGISTRO</p></div>
           <form autocomplete="off" id="formulario" method="POST" action="{{ url_for('register') }}">
             <input type="text" id="nombre" name="nombre" placeholder="Nombre" required>
-            <!--input type="text" id="nombregrupo" placeholder="Nombre del grupo" required-->
             <input type="email" id="email" name="email" placeholder="Email" required>
             <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña" required>
             <input type="password" id="confirmacion" name="confirmacion" placeholder="Repite la contraseña..." required>
             <button class="button">Sign Up</button>
-            <p id="erroreak" class="error_message">
-              <div class="error_message">{{ error }}</div>
-            </p>   
+            <p id="erroreak" class="error_message">{{ error }}</p>   
+            <br>
+            <br>
+            <br>
           </form>
         </div>
       </div>

@@ -1,0 +1,1 @@
+APP_SECRET_KEY = 'rtLYX24pXabBKMxB0Pxl'
