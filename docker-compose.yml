@@ -3,6 +3,8 @@ services:
 
   mensajeria:
     build: ./build/mensajeria/
+    expose:
+      - "5002"
     volumes:
       - ./mensajeria:/mensajeria
     depends_on:
@@ -29,6 +31,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`localhost`)"
       - "traefik.http.services.app.loadbalancer.server.port=5000"
+    expose:
+      - "5000"
     volumes:
       - ./app:/app
     depends_on:
@@ -39,6 +43,8 @@ services:
 
   flask-api:
     build: ./build/api/
+    expose:
+      - "5001"
     volumes:
       - ./api:/api
     depends_on:
@@ -52,6 +58,8 @@ services:
 
   mysql:
     image: mysql:latest
+    expose:
+      - "3306"
     environment:
       MYSQL_ROOT_PASSWORD: "VoQvmfovsy0hb0CcN5SI"
       MYSQL_DATABASE: "database"
