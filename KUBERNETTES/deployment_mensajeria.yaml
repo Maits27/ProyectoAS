@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: mensajeria-deployment
+
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      component: mensajeria
+    template:
+      metadata:
+        labels:
+          component: mensajeria
+      spec:
+        containers:
+        - name: mensajeria-pod
+          image: maits27/budgetbuddy:mensajeria
+          ports:
+          - containerPort: 5002
+          volumeMounts:
+        - name: mensajeria-volume
+          mountPath: /mensajeria
+      volumes:
+      - name: mensajeria-volume
+        hostPath:
+          path: /mensajeria

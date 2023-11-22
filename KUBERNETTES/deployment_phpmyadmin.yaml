@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: deployment-phpmyadmin
+
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      component: phpmyadmin
+    template:
+      metadata:
+        labels:
+          component: phpmyadmin
+      spec:
+        containers:
+        - name: phpmyadmin
+          image: phpmyadmin/phpmyadmin
+          ports:
+          - containerPort: 80

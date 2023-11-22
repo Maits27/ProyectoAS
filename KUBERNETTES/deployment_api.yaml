@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: maits27/budgetbuddy:api
+        ports:
+        - containerPort: 5001
+        volumeMounts:
+        - name: api-volume
+          mountPath: /api
+      volumes:
+      - name: api-volume
+        hostPath:
+          path: /api

@@ -63,8 +63,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "VoQvmfovsy0hb0CcN5SI"
       MYSQL_DATABASE: "database"
-      MYSQL_USER: maitane
-      MYSQL_PASSWORD: "123"
     volumes:
       - ./database.sql:/docker-entrypoint-initdb.d/database.sql
       - datos_mysql:/var/lib/mysql

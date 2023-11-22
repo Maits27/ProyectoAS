@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "VoQvmfovsy0hb0CcN5SI"
+        - name: MYSQL_DATABASE
+          value: "database"
+        volumeMounts:
+        - name: mysql-volume
+          mountPath: /docker-entrypoint-initdb.d
+        - name: datos-mysql-volume
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-volume
+        hostPath:
+          path: /path/to/database.sql
+      - name: datos-mysql-volume
+        persistentVolumeClaim:
+          claimName: datos-mysql-pvc
+  volumeClaimTemplates:
+  - metadata:
+      name: datos-mysql-pvc
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
