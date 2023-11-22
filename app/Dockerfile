@@ -1,19 +1,19 @@
 # Usa una imagen base de Python
 FROM python:3.9
-
+  
 
 # Establece el directorio de trabajo en /app
-WORKDIR /mensajeria
-
-# Copia el archivo de requisitos e instala las dependencias
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+WORKDIR /app
 
 # Copia el contenido de la aplicación en el contenedor
-COPY . .
+COPY . /app
+
+# Copia el archivo de requisitos e instala las dependencias
+RUN pip install -r requirements.txt
+
 
 # Expone el puerto en el que se ejecutará la aplicación Flask
-EXPOSE 5002
+EXPOSE 5000
 
 # Ejecuta la aplicación Flask
-CMD ["python", "mensajeria.py"]
+CMD ["python", "app.py"]

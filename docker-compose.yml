@@ -2,11 +2,9 @@ version: "3.9"
 services:
 
   mensajeria:
-    build: ./build/mensajeria/
+    build: ./mensajeria/
     expose:
       - "5002"
-    volumes:
-      - ./mensajeria:/mensajeria
     depends_on:
       - flask-app
     links:
@@ -26,15 +24,13 @@ services:
 
 
   flask-app:
-    build: ./build/app/
+    build: ./app/
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`localhost`)"
       - "traefik.http.services.app.loadbalancer.server.port=5000"
     expose:
       - "5000"
-    volumes:
-      - ./app:/app
     depends_on:
       - flask-api
     links:
@@ -42,11 +38,9 @@ services:
 
 
   flask-api:
-    build: ./build/api/
+    build: ./api/
     expose:
       - "5001"
-    volumes:
-      - ./api:/api
     depends_on:
       mysql:
         condition: service_healthy

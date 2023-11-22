@@ -6,21 +6,14 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: app
+      component: app
   template:
     metadata:
       labels:
-        app: app
+        component: app
     spec:
       containers:
       - name: app
-        image: maits27/budgetbuddy:app
+        image: maits27/app
         ports:
         - containerPort: 5000
-        volumeMounts:
-        - name: app-volume
-          mountPath: /app
-      volumes:
-      - name: app-volume
-        hostPath:
-          path: /app
