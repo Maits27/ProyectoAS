@@ -6,11 +6,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql
+      component: mysql
   template:
     metadata:
       labels:
-        app: mysql
+        component: mysql
     spec:
       containers:
       - name: mysql
@@ -22,23 +22,17 @@ spec:
           value: "VoQvmfovsy0hb0CcN5SI"
         - name: MYSQL_DATABASE
           value: "database"
-        volumeMounts:
-        - name: mysql-volume
-          mountPath: /docker-entrypoint-initdb.d
-        - name: datos-mysql-volume
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: mysql-volume
-        hostPath:
-          path: /path/to/database.sql
-      - name: datos-mysql-volume
-        persistentVolumeClaim:
-          claimName: datos-mysql-pvc
-  volumeClaimTemplates:
-  - metadata:
-      name: datos-mysql-pvc
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 1Gi
+       
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: clusterip-bd
+spec:
+  type: ClusterIP
+  selector:
+    component: mysql
+  ports:
+  - port: 3306
+    targetPort: 3306

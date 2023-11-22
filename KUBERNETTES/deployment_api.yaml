@@ -6,21 +6,29 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: api
+      component: api
   template:
     metadata:
       labels:
-        app: api
+        component: api
     spec:
       containers:
       - name: api
-        image: maits27/budgetbuddy:api
+        image: maits27/api
         ports:
         - containerPort: 5001
-        volumeMounts:
-        - name: api-volume
-          mountPath: /api
-      volumes:
-      - name: api-volume
-        hostPath:
-          path: /api
+        
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: clusterip-api
+spec:
+  type: ClusterIP
+  selector:
+    component: api
+  ports:
+  - port: 5001
+    targetPort: 5001

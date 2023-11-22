@@ -17,3 +17,33 @@ spec:
         image: maits27/app
         ports:
         - containerPort: 5000
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: clusterip-app
+spec:
+  type: ClusterIP
+  selector:
+    component: app
+  ports:
+  - port: 5000
+    targetPort: 5000
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-load-balancer
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 5000
+  selector:
+    component: app
