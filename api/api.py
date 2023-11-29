@@ -3,6 +3,8 @@ from flask import Flask, request
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import hashlib
+
+import requests
 from config import SERVICE_MYSQL, USER_PASSWORD, MYSQL_DATABASE, MYSQL_USER, APP_SECRET_KEY
 
 
@@ -56,6 +58,11 @@ def register():
             resultado['correcto'] = True
             resultado['datos'] = {'id': id}
 
+            response = send_register_email(nombre, email)
+            if not response.get('correcto'):
+                resultado['correcto'] = False
+                resultado['error'] = response.get('mensaje')
+
     except Exception as e:
     # Manejo de excepciones
         print(f"Error en el registro de usuario: {e}")
@@ -65,6 +72,16 @@ def register():
 
     return resultado
 
+def send_register_email(nombre, email):
+    db_url = "http://mensajeria:5002/register"  # Utiliza el nombre del servicio de la base de datos
+    payload = {'username': nombre, 'email': email}
+    response = requests.post(db_url, json=payload)
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        print(f"Error en la solicitud. Código de estado: {response.status_code}")
+        return None
 #####################
 ###     LOGIN     ###
 #####################
@@ -229,6 +246,7 @@ def join_project():
     idproyecto = data.get('idproyecto')
     userid = data.get('userid')
     contra = data.get('contra')
+    sessionUsername = data.get('sessionUsername')
 
     resultado = {
         'correcto': False,
@@ -259,6 +277,13 @@ def join_project():
             resultado['correcto'] = True
             resultado['error'] = 'NO HAY ERROR'
             resultado['datos'] = {'idproyecto': idproyecto, 'nombreProyecto':proyecto['nombre'], 'email': proyecto['main']}
+            
+            response = send_join_email(proyecto['main'], sessionUsername, idproyecto)
+            if not response.get('correcto'):
+                resultado['correcto'] = False
+                resultado['error'] = response.get('mensaje')
+
+        
         return resultado
     except Exception as e:
     # Manejo de excepciones
@@ -268,6 +293,17 @@ def join_project():
     finally:
         cursor.close()
 
+
+def send_join_email(email, newuser, proyecto):
+    db_url = "http://mensajeria:5002/join"  # Utiliza el nombre del servicio de la base de datos
+    payload = {'email': email, 'newuser': newuser, 'proyecto': proyecto}
+    response = requests.post(db_url, json=payload)
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        print(f"Error en la solicitud. Código de estado: {response.status_code}")
+        return None
 #####################
 ### PROJECT MENU  ###
 #####################

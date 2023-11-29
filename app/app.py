@@ -55,11 +55,7 @@ def register():
                 session['project'] = ''
                 session['transaction'] = ''
                 session['ID_USER'] = datos.get('id')
-                response = send_register_email(nombre, email)
-                if response.get('correcto'):
-                    return redirect(url_for('user_menu'))
-                else:
-                    var_error = response.get('mensaje')
+                return redirect(url_for('user_menu'))
             else:
                 var_error = response.get('error')
         else:
@@ -78,7 +74,7 @@ def register_user(nombre, email, contra):
         print(f"Error en la solicitud. Código de estado: {response.status_code}")
         return None
 
-def send_register_email(nombre, email):
+'''def send_register_email(nombre, email):
     db_url = "http://mensajeria:5002/register"  # Utiliza el nombre del servicio de la base de datos
     payload = {'username': nombre, 'email': email}
     response = requests.post(db_url, json=payload)
@@ -87,7 +83,7 @@ def send_register_email(nombre, email):
         return data
     else:
         print(f"Error en la solicitud. Código de estado: {response.status_code}")
-        return None
+        return None'''
 
 
 
@@ -247,11 +243,11 @@ def join_project():
 
                 datos['idproyecto'] = idproyecto
 
-                response = send_join_email(d['email'], session['username'], d['nombreProyecto'] )
+                '''response = send_join_email(d['email'], session['username'], d['nombreProyecto'] )
                 if response.get('correcto'):
                     return redirect(url_for('user_menu'))
                 else:
-                    datos['error'] = response.get('mensaje')
+                    datos['error'] = response.get('mensaje')'''
 
                 return redirect(url_for('project_menu', datos=datos))
             else:
@@ -262,7 +258,7 @@ def join_project():
     
 def acceder_proyecto(userid, idproyecto, contra):
     db_url = "http://flask-api:5001/join_project"  
-    payload = {'userid': userid, 'idproyecto': idproyecto, 'contra': contra}
+    payload = {'userid': userid, 'sessionUsername': session['username'], 'idproyecto': idproyecto, 'contra': contra}
     response = requests.post(db_url, json=payload)
     if response.status_code == 200:
         data = response.json()
@@ -272,7 +268,7 @@ def acceder_proyecto(userid, idproyecto, contra):
         return None
 
 
-def send_join_email(email, newuser, proyecto):
+'''def send_join_email(email, newuser, proyecto):
     db_url = "http://mensajeria:5002/join"  # Utiliza el nombre del servicio de la base de datos
     payload = {'email': email, 'newuser': newuser, 'proyecto': proyecto}
     response = requests.post(db_url, json=payload)
@@ -281,7 +277,7 @@ def send_join_email(email, newuser, proyecto):
         return data
     else:
         print(f"Error en la solicitud. Código de estado: {response.status_code}")
-        return None
+        return None'''
 
 
 #####################
