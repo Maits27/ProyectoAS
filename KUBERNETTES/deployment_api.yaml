@@ -17,6 +17,9 @@ spec:
         image: maits27/api
         ports:
         - containerPort: 5001
+        env:
+          - name: MYSQL_HOST
+            value: mysql
         
 ---
 
@@ -24,7 +27,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: clusterip-api
+  name: flask-api
 spec:
   type: ClusterIP
   selector:

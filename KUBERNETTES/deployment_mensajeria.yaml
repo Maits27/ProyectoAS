@@ -24,7 +24,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: clusterip-mensajeria
+  name: mensajeria
 spec:
   type: ClusterIP
   selector:

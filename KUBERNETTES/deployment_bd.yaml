@@ -17,18 +17,23 @@ spec:
         image: mysql:latest
         ports:
         - containerPort: 3306
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: "VoQvmfovsy0hb0CcN5SI"
-        - name: MYSQL_DATABASE
-          value: "database"
+        envFrom:
+        - configMapRef:
+            name: mysql-configmap
+        volumeMounts:
+        - name: initial-data
+          mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: initial-data
+        configMap:
+          name: mysql-configmap
        
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: clusterip-bd
+  name: mysql
 spec:
   type: ClusterIP
   selector:
