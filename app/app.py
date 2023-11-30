@@ -1,5 +1,7 @@
+import re
 from flask import Flask, render_template, json, request, redirect, session, url_for
 import requests
+from copy import deepcopy
 from config import APP_SECRET_KEY
 
 app = Flask(__name__)
@@ -73,17 +75,6 @@ def register_user(nombre, email, contra):
     else:
         print(f"Error en la solicitud. Código de estado: {response.status_code}")
         return None
-
-'''def send_register_email(nombre, email):
-    db_url = "http://mensajeria:5002/register"  # Utiliza el nombre del servicio de la base de datos
-    payload = {'username': nombre, 'email': email}
-    response = requests.post(db_url, json=payload)
-    if response.status_code == 200:
-        data = response.json()
-        return data
-    else:
-        print(f"Error en la solicitud. Código de estado: {response.status_code}")
-        return None'''
 
 
 
@@ -243,12 +234,6 @@ def join_project():
 
                 datos['idproyecto'] = idproyecto
 
-                '''response = send_join_email(d['email'], session['username'], d['nombreProyecto'] )
-                if response.get('correcto'):
-                    return redirect(url_for('user_menu'))
-                else:
-                    datos['error'] = response.get('mensaje')'''
-
                 return redirect(url_for('project_menu', datos=datos))
             else:
                 datos['error'] = response.get('error')
@@ -268,16 +253,6 @@ def acceder_proyecto(userid, idproyecto, contra):
         return None
 
 
-'''def send_join_email(email, newuser, proyecto):
-    db_url = "http://mensajeria:5002/join"  # Utiliza el nombre del servicio de la base de datos
-    payload = {'email': email, 'newuser': newuser, 'proyecto': proyecto}
-    response = requests.post(db_url, json=payload)
-    if response.status_code == 200:
-        data = response.json()
-        return data
-    else:
-        print(f"Error en la solicitud. Código de estado: {response.status_code}")
-        return None'''
 
 
 #####################
@@ -318,16 +293,7 @@ def get_datos_proyecto(idproyecto):
         print(f"Error en la solicitud. Código de estado: {response.status_code}")
         return None 
     
-# def project_menu_datos(idproyecto):
-#     db_url = "http://flask-api:5001/project_menu"  
-#     payload = {'idproyecto': idproyecto}
-#     response = requests.get(db_url, json=payload)
-#     if response.status_code == 200:
-#         data = response.json()
-#         return data
-#     else:
-#         print(f"Error en la solicitud. Código de estado: {response.status_code}")
-#         return None
+
 
 #####################
 ###  TRANSACTION  ###
@@ -352,32 +318,32 @@ def transaction_menu():
         opcion = request.form["opcion"]
 
         elementos_dinamicos = []
-        indice = 0
+        i = 0
         # Obtén los datos de los elementos dinámicos
         for key in request.form.keys():
             # Verificar si la clave es un elemento dinámico
             if key.startswith("nombreproducto"):
                 # Extraer el índice del nombre de la clave
-                indice += 1
+                match = re.match(r'nombreproducto(\d+)', key)
+                if match:
+                    i = int(match.group(1))
                 
-                # Obtener los valores del elemento dinámico
-        for i in range(indice):
-            nombre_producto = request.form[f'nombreproducto{i}']
-            cantidad = int(request.form[f'cantidad{i}'])
-            precio = float(request.form[f'precio{i}'])
-            categoria = request.form[f'categoria{i}']
+                    nombre_producto = request.form[f'nombreproducto{i}']
+                    cantidad = int(request.form[f'cantidad{i}'])
+                    precio = float(request.form[f'precio{i}'])
+                    categoria = request.form[f'categoria{i}']
 
-            # Verificar si se encontró un elemento con ese índice
-            if nombre_producto is not None:
-                elemento = {
-                    'nombreproducto': nombre_producto,
-                    'cantidad': cantidad,
-                    'precio': precio,
-                    'categoria': categoria,
-                }
-                elementos_dinamicos.append(elemento)
-        if len(elementos_dinamicos) >0:
-            response = anadir_transaccion(id, idproyecto, nombre, opcion, elementos_dinamicos)
+                    # Verificar si se encontró un elemento con ese índice
+                    if nombre_producto is not None:
+                        elemento = {
+                            'nombreproducto': nombre_producto,
+                            'cantidad': cantidad,
+                            'precio': precio,
+                            'categoria': categoria,
+                        }
+                        elementos_dinamicos.append(elemento)
+        if len(elementos_dinamicos) > 0:
+            response = anadir_transaccion(session['ID_USER'], idproyecto, nombre, opcion, elementos_dinamicos)
         
             if response.get('correcto'):
                 d = response.get('datos')
@@ -397,15 +363,22 @@ def transaction_menu():
 
     
 def anadir_transaccion(userid, idproyecto, nombre, opcion, productos):
-    db_url = "http://flask-api:5001/transaction_menu"  
-    payload = {'userid': userid, 'idproyecto': idproyecto, 'nombre': nombre, 'opcion': opcion, 'productos': productos}
-    response = requests.post(db_url, json=payload)
-    if response.status_code == 200:
-        data = response.json()
-        return data
-    else:
-        print(f"Error en la solicitud. Código de estado: {response.status_code}")
-        return None
+    try:
+        db_url = "http://flask-api:5001/transaction_menu"  
+        payload = {'userid': userid, 'idproyecto': idproyecto, 'nombre': nombre, 'opcion': opcion, 'productos': productos}
+        response = requests.post(db_url, json=payload)
+        if response.status_code == 200:
+            data = response.json()
+            return data
+        else:
+            print(f"Error en la solicitud. Código de estado: {response.status_code}")
+            return None
+    except Exception as e:
+    # Manejo de excepciones
+        print(f"Error en el registro de usuario: {e}")
+        return {'correcto': False, 'error': f'{e}'}
+
+
 
 
 
