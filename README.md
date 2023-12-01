@@ -1,4 +1,4 @@
-<h1>PROYECTO FLASK<\h1>
+<h1>PROYECTO FLASK</h1>
 
 <h2>Requirements</h2>
 En la carpeta 'mensajeria' hace falta un fichero llamado 't_gmail.py' con el token de nuestro correo electronico para que funcionen los emails. Para conseguir el token del correo electrónico que se vaya a usar, se deben seguir los pasos establecidos al principio del siguiente enlace:
@@ -37,9 +37,14 @@ Especialmente importante ejecutar primero la base de datos de forma que se cargu
 Para ver que todo funciona correctamente se pueden hacer uso de los siguientes comandos donde todas las instancias deberían estar _Running_:
 
 ```bash
-kubectl get deploy // Muestra los Deployment generados
-kubectl get pods // Muestra los Pods creados por cada Deployment
-kubectl get svc // Muestra los ClusterIP y LoadBalancer
+// Muestra los Deployment generados
+kubectl get deploy
+
+// Muestra los Pods creados por cada Deployment
+kubectl get pods
+
+// Muestra los ClusterIP y LoadBalancer 
+kubectl get svc 
 ```
 
 Para eliminar algún deployment o quitar el entorno seguir los siguientes comandos:
