@@ -47,8 +47,8 @@
         // Agregar campos al nuevo div
         nuevoCampo.innerHTML = `
             <input class="nuevo_producto_valor" type="text" id="nombreproducto${elementosActuales}" name="nombreproducto${elementosActuales}" placeholder="Nombre del producto" required>
-            <input class="nuevo_producto_valor" type="number" id="cantidad${elementosActuales}" name="cantidad${elementosActuales}" placeholder="Cantidad" required>
-            <input class="nuevo_producto_valor" type="number" id="precio${elementosActuales}" name="precio${elementosActuales}" step="0.01" placeholder="Precio por unidad" required>
+            <input class="nuevo_producto_valor" type="number" id="cantidad${elementosActuales}" name="cantidad${elementosActuales}" placeholder="Cantidad" required min="0" max="1000">
+            <input class="nuevo_producto_valor" type="number" id="precio${elementosActuales}" name="precio${elementosActuales}" step="0.01" placeholder="Precio por unidad" required min="0" max="1000000">
             <select class="select-transaccion" id="categoria${elementosActuales}" name="categoria${elementosActuales}" required>
                 <option value="Comida">Comida</option>
                 <option value="Vivienda">Vivienda</option>

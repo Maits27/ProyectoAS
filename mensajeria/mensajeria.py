@@ -18,7 +18,7 @@ def register():
     email = data.get('email')
     username = data.get('username')
 
-    remitente = "proyectoasmaitane@gmail.com"
+    remitente = "budgetbuddy46@gmail.com"
     destinatario = email # Suponiendo que tienes un formulario con un campo 'destinatario'
     mensaje = f'''<html>
                     <body>
@@ -70,7 +70,7 @@ def join():
     newuser = data.get('newuser')
     proyecto = data.get('proyecto')
 
-    remitente = "proyectoasmaitane@gmail.com"
+    remitente = "budgetbuddy46@gmail.com"
     destinatario = email # Suponiendo que tienes un formulario con un campo 'destinatario'
     mensaje = f'''<html>
                     <body>

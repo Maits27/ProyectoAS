@@ -17,7 +17,7 @@
         <fieldset>
             <h2 class="fs-title">Crea un nuevo proyecto</h2>
             <input type="text" id="nombre" name="nombre" placeholder="Nombre del proyecto" required>
-            <input type="number" id="presupuesto" name="presupuesto" placeholder="Presupuesto (no podrás cambiarlo más adelante)" required>
+            <input type="number" id="presupuesto" name="presupuesto" placeholder="Presupuesto (no podrás cambiarlo más adelante)" required min="0" max="1000000000">
             <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña para el proyecto" required>
             <input type="password" id="confirmacion" name="confirmacion" placeholder="Repite la contraseña..." required>
             <button>Crear</button>
