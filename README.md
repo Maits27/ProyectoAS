@@ -1,4 +1,4 @@
-**PROYECTO FLASK**
+<h1>PROYECTO FLASK<\h1>
 
 <h2>Requirements</h2>
 En la carpeta 'mensajeria' hace falta un fichero llamado 't_gmail.py' con el token de nuestro correo electronico para que funcionen los emails. Para conseguir el token del correo electrónico que se vaya a usar, se deben seguir los pasos establecidos al principio del siguiente enlace:
