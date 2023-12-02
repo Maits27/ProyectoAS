@@ -35,7 +35,7 @@ docker compose up -d
 docker compose up
 ```
 
-Cuando todos los servicios muestren un 'Started' o 'Healthy' se podrá acceder a http://localhost:80 para la aplicación, en el http://localhost:8080 a los dashboards de Traefik y en el http://localhost:8085 a phpMyAdmin. 
+Cuando todos los servicios muestren un _Started_ o _Healthy_ se podrá acceder a http://localhost:80 para la aplicación, en el http://localhost:8080 a los dashboards de Traefik y en el http://localhost:8085 a phpMyAdmin. 
 
 En caso de querer ejecutar el docker compose en un servidor, **deberá cambiarse el HOST de la línea 30 del docker-compose.yaml por la IP externa de este servidor**.
 
@@ -58,9 +58,11 @@ docker compose down
 
 Para desplegar la aplicación en el entorno Kubernetes, solo serán necesarios los ficheros .yaml de la carpeta 'Kubernetes'.
 
-En caso de querer cambiar el email desde el que se quieren enviar correos, se debería subir a Docker Hub la imagen creada en el apartado anterior y sustituir la imagen del fichero deployment_mensajeria.yaml llamada 'maits27/mensajeria' por la nueva imagen de Docker Hub.
+En caso de querer cambiar el email desde el que se quieren enviar correos, se debería subir a Docker Hub la imagen creada en el apartado anterior y sustituir la imagen del fichero _deployment_mensajeria.yaml_ llamada 'maits27/mensajeria' por la nueva imagen de Docker Hub.
 
 <h3>Recomendaciones</h3>
+
+El cluster se puede desplegar en GKE, sin embargo, se recomienda hacer uso del Kubernetes proporcionado por Docker Desktop, debido a que el proceso de creación del cluster y la puesta en marcha de los servicios es prácticamente inmediata, a diferencia de en GKE.
 
 El orden correcto para ejecutarlos sería el siguiente (una vez dentro de la carpeta):
 
