@@ -1,13 +1,16 @@
 <h1>PROYECTO FLASK</h1>
 
-<h2>Requirements</h2>
+<h2>Docker</h2>
+
+<h3>Requisitos</h3>
+
 En la carpeta 'mensajeria' hace falta un fichero llamado 't_gmail.py' con el token de nuestro correo electronico para que funcionen los emails. Para conseguir el token del correo electrónico que se vaya a usar, se deben seguir los pasos establecidos al principio del siguiente enlace:
 
 https://recursospython.com/guias-y-manuales/enviar-correo-electronico-via-gmail-y-smtp/
 
 Los ficheros 'config.py' de las carpetas 'api' y 'app' contienen las claves necesarias para acceder a la base de datos y hashear las contraseñas, por lo que **no se pueden borrar ni alterar**.
 
-<h2>Recomendaciones Docker</h2>
+<h3>Recomendaciones</h3>
 
 Antes de iniciar los contenedores, se recomienda hacer una limpieza de todas las imágenes y volúmenes de Docker que puedan estar activos de alguna forma u ocupando alguno de los puertos necesarios para el correcto funcionamiento de la aplicación. Para ello seguir los siguientes pasos:
 
@@ -49,9 +52,17 @@ Para detener los contenedores:
 docker compose down
 ```
 
-<h2>Recomendaciones Kubernetes</h2>
+<h2>Kubernetes</h2>
 
-Para desplegar la aplicación en el entorno Kubernetes, solo serán necesarios los ficheros .yaml de la carpeta 'Kubernetes'. El orden correcto para ejecutarlos sería el siguiente (una vez dentro de la carpeta):
+<h3>Requisitos</h3>
+
+Para desplegar la aplicación en el entorno Kubernetes, solo serán necesarios los ficheros .yaml de la carpeta 'Kubernetes'.
+
+En caso de querer cambiar el email desde el que se quieren enviar correos, se debería subir a Docker Hub la imagen creada en el apartado anterior y sustituir la imagen del fichero deployment_mensajeria.yaml llamada 'maits27/mensajeria' por la nueva imagen de Docker Hub.
+
+<h3>Recomendaciones</h3>
+
+El orden correcto para ejecutarlos sería el siguiente (una vez dentro de la carpeta):
 
 ```bash
 kubectl apply -f .\deployment_bd.yaml
