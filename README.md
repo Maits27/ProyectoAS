@@ -40,7 +40,7 @@ Cuando todos los servicios muestren un 'Started' o 'Healthy' se podrá acceder a
 En caso de querer ejecutar el docker compose en un servidor, **deberá cambiarse el HOST de la línea 30 del docker-compose.yaml por la IP externa de este servidor**.
 
 
-Todas las carpetas del repositorio menos la de 'Kubernetes' son necesarias a la hora de hacer el docker compose. En caso de querer utilizar imágenes ya creadas habría que añadir las siguientes en el docker-compose.yml:
+Todas las carpetas del repositorio menos la de 'Kubernetes' son necesarias a la hora de hacer el docker compose. En caso de querer utilizar las imágenes ya creadas habría que añadir las siguientes en el docker-compose.yml:
 
 * APP: https://hub.docker.com/repository/docker/maits27/app/general → maits27/app
 * API: https://hub.docker.com/repository/docker/maits27/api/general → maits27/api
