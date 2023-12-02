@@ -21,6 +21,14 @@ docker volume prune -a
 
 ```
 
+Una vez eliminados todos los objetos que pudiesen resultar en conflicto, se puede iniciar el entorno Docker:
+
+```bash
+docker compose up -d
+```
+
+Cuando todos los servicios muestren un 'Started' o 'Healthy' se podrá acceder a http://localhost:80 para la aplicación, en el puerto 8080 a los dashboards de Traefik y en el 8085 a phpMyAdmin. 
+
 <h2>Recomendaciones Kubernetes</h2>
 
 Para desplegar la aplicación en el entorno Kubernetes, solo serán necesarios los ficheros .yaml de la carpeta 'Kubernetes'. El orden correcto para ejecutarlos sería el siguiente (una vez dentro de la carpeta):
