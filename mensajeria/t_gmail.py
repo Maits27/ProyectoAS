@@ -1,0 +1,1 @@
+EMAIL_T = 'etax hdhl tzyp drnx'
