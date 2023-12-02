@@ -5,6 +5,8 @@ En la carpeta 'mensajeria' hace falta un fichero llamado 't_gmail.py' con el tok
 
 https://recursospython.com/guias-y-manuales/enviar-correo-electronico-via-gmail-y-smtp/
 
+Los ficheros 'config.py' de las carpetas 'api' y 'app' contienen las claves necesarias para acceder a la base de datos y hashear las contraseñas, por lo que **no se pueden borrar ni alterar**.
+
 <h2>Recomendaciones Docker</h2>
 
 Antes de iniciar los contenedores, se recomienda hacer una limpieza de todas las imágenes y volúmenes de Docker que puedan estar activos de alguna forma u ocupando alguno de los puertos necesarios para el correcto funcionamiento de la aplicación. Para ello seguir los siguientes pasos:
@@ -25,9 +27,16 @@ Una vez eliminados todos los objetos que pudiesen resultar en conflicto, se pued
 
 ```bash
 docker compose up -d
+
+// O si se quieren ver los logs:
+docker compose up
 ```
 
-Cuando todos los servicios muestren un 'Started' o 'Healthy' se podrá acceder a http://localhost:80 para la aplicación, en el http://localhost:8080 a los dashboards de Traefik y en el http://localhost:8085 a phpMyAdmin. 
+Cuando todos los servicios muestren un 'Started' o 'Healthy' se podrá acceder a http://localhost:80 para la aplicación, en el http://localhost:8080 a los dashboards de Traefik y en el http://localhost:8085 a phpMyAdmin. Todas las carpetas del repositorio menos la de 'Kubernetes' son necesarias a la hora de hacer el docker compose. En caso de querer utilizar imágenes ya creadas habría que añadir las siguientes en el docker-compose.yml:
+
+* APP: https://hub.docker.com/repository/docker/maits27/app/general → maits27/app
+* API: https://hub.docker.com/repository/docker/maits27/api/general → maits27/api
+* Mensajería: https://hub.docker.com/repository/docker/maits27/mensajeria/general → maits27/mensajeria
 
 <h2>Recomendaciones Kubernetes</h2>
 
