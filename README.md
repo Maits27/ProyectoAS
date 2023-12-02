@@ -32,7 +32,10 @@ docker compose up -d
 docker compose up
 ```
 
-Cuando todos los servicios muestren un 'Started' o 'Healthy' se podrá acceder a http://localhost:80 para la aplicación, en el http://localhost:8080 a los dashboards de Traefik y en el http://localhost:8085 a phpMyAdmin. Todas las carpetas del repositorio menos la de 'Kubernetes' son necesarias a la hora de hacer el docker compose. En caso de querer utilizar imágenes ya creadas habría que añadir las siguientes en el docker-compose.yml:
+Cuando todos los servicios muestren un 'Started' o 'Healthy' se podrá acceder a http://localhost:80 para la aplicación, en el http://localhost:8080 a los dashboards de Traefik y en el http://localhost:8085 a phpMyAdmin. En caso de querer ejecutar el docker compose en un servidor, **deberá cambiarse el HOST de la línea 30 del docker-compose.yaml por el puerto externo de este servidor**.
+
+
+Todas las carpetas del repositorio menos la de 'Kubernetes' son necesarias a la hora de hacer el docker compose. En caso de querer utilizar imágenes ya creadas habría que añadir las siguientes en el docker-compose.yml:
 
 * APP: https://hub.docker.com/repository/docker/maits27/app/general → maits27/app
 * API: https://hub.docker.com/repository/docker/maits27/api/general → maits27/api
