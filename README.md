@@ -38,6 +38,12 @@ Cuando todos los servicios muestren un 'Started' o 'Healthy' se podrá acceder a
 * API: https://hub.docker.com/repository/docker/maits27/api/general → maits27/api
 * Mensajería: https://hub.docker.com/repository/docker/maits27/mensajeria/general → maits27/mensajeria
 
+Para detener los contenedores:
+
+```bash
+docker compose down
+```
+
 <h2>Recomendaciones Kubernetes</h2>
 
 Para desplegar la aplicación en el entorno Kubernetes, solo serán necesarios los ficheros .yaml de la carpeta 'Kubernetes'. El orden correcto para ejecutarlos sería el siguiente (una vez dentro de la carpeta):
