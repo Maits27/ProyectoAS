@@ -27,7 +27,7 @@ Una vez eliminados todos los objetos que pudiesen resultar en conflicto, se pued
 docker compose up -d
 ```
 
-Cuando todos los servicios muestren un 'Started' o 'Healthy' se podrá acceder a http://localhost:80 para la aplicación, en el puerto 8080 a los dashboards de Traefik y en el 8085 a phpMyAdmin. 
+Cuando todos los servicios muestren un 'Started' o 'Healthy' se podrá acceder a http://localhost:80 para la aplicación, en el http://localhost:8080 a los dashboards de Traefik y en el http://localhost:8085 a phpMyAdmin. 
 
 <h2>Recomendaciones Kubernetes</h2>
 
