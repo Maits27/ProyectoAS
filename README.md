@@ -4,7 +4,7 @@
 
 <h3>Requisitos</h3>
 
-En la carpeta 'mensajeria' hace falta un fichero llamado 't_gmail.py' con el token de nuestro correo electronico para que funcionen los emails. Para conseguir el token del correo electrónico que se vaya a usar, se deben seguir los pasos establecidos al principio del siguiente enlace:
+En la carpeta 'mensajeria' hace falta un fichero llamado 't_gmail.py' con el token de nuestro correo electronico para que funcionen los emails. Para conseguir el token del correo electrónico que se va a utilizar, deben seguirse los pasos detallados al principio del siguiente enlace:
 
 https://recursospython.com/guias-y-manuales/enviar-correo-electronico-via-gmail-y-smtp/
 
