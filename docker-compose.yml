@@ -27,7 +27,7 @@ services:
     build: ./app/
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.app.rule=Host(`localhost`)"
+      - "traefik.http.routers.app.rule=PathPrefix(`/`)"
       - "traefik.http.services.app.loadbalancer.server.port=5000"
     expose:
       - "5000"
