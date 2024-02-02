@@ -1,4 +1,4 @@
-<h1>PROYECTO FLASK</h1>
+<h1>BUDGETBUDDY</h1>
 
 <h2>Docker</h2>
 
